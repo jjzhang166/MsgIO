@@ -152,7 +152,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\src\mio_loop.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\mio_queue.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\mio_thread.cpp"
 				>
 			</File>
 		</Filter>
@@ -166,11 +174,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\mio_exception.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\mio_loop.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\mio_queue.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio_thread.h"
 				>
 			</File>
 			<File

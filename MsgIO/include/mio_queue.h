@@ -20,9 +20,9 @@ public:
     ~queue();
 
     void initialize();
-    void dispatch();
 
     HWND getHandle();
+    void setCallback(function_t queue_func);
 
     int queue_func(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 

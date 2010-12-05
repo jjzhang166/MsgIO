@@ -37,18 +37,13 @@ void queue::initialize()
     SetWindowLong(_msgWnd, GWLP_WNDPROC, (LONG)internal::wndProc);
 }
 
-void queue::dispatch()
-{
-    MSG msg;
-    while (GetMessage (&msg, _msgWnd, 0, 0))
-    {
-        TranslateMessage (&msg);
-        DispatchMessage (&msg);
-    }
-}
-
 HWND queue::getHandle()
 {
     return _msgWnd;
+}
+
+void queue::setCallback( function_t queue_func )
+{
+    _callback = queue_func;
 }
 } //namespace mio
