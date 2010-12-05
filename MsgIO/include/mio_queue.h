@@ -20,6 +20,9 @@ public:
     ~queue();
 
     void initialize();
+    void dispatch();
+
+    HWND getHandle();
 
     int queue_func(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
