@@ -39,4 +39,26 @@ private:
     static DWORD WINAPI trampoline(void* user);
 };
 
+class thread_mutex 
+{
+private: //Disable copy and assignment
+	thread_mutex(const thread_mutex&);         
+	void operator=(const thread_mutex&);
+
+public:
+    thread_mutex();
+
+    ~thread_mutex();
+
+public:
+    void lock();
+
+    bool trylock();
+
+    void unlock();
+
+private:
+    CRITICAL_SECTION _mutex;
+};
+
 } //namespace mio

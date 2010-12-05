@@ -64,4 +64,31 @@ void thread::exit( void *retVal )
 {
     ::ExitThread((DWORD)retVal);
 }
+
+thread_mutex::thread_mutex()
+{
+    BOOL ret = InitializeCriticalSectionAndSpinCount(&_mutex, 4000);
+    if (!ret)
+        throw thread_error(GetLastError(), "cannot create mutex");
+}
+
+thread_mutex::~thread_mutex()
+{
+    DeleteCriticalSection(&_mutex);
+}
+
+void thread_mutex::lock()
+{
+    EnterCriticalSection(&_mutex);
+}
+
+bool thread_mutex::trylock()
+{
+    return !!TryEnterCriticalSection(&_mutex);
+}
+
+void thread_mutex::unlock()
+{
+    LeaveCriticalSection(&_mutex);
+}
 } //namespace mio
