@@ -2,39 +2,14 @@
 
 namespace mio {
 
-namespace internal {
-
-LRESULT CALLBACK wndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    queue *q = (queue*)GetWindowLong(hwnd, GWL_USERDATA);
-    return q->queue_func(hwnd, message, wParam, lParam);
-}
-
-} //namespace internal
-
 queue::queue()
 {
+    _msgWnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
 }
-
-queue::queue( function_t queue_func ) : _callback(queue_func)
-{
-}
-
 
 queue::~queue()
 {
-}
-
-int queue::queue_func( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam )
-{
-    return _callback(hwnd, message, wParam, lParam);
-}
-
-void queue::initialize()
-{
-    _msgWnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
-    SetWindowLong(_msgWnd, GWL_USERDATA, (LONG)this);
-    SetWindowLong(_msgWnd, GWLP_WNDPROC, (LONG)internal::wndProc);
+    DestroyWindow(_msgWnd);
 }
 
 HWND queue::getHandle()
@@ -42,8 +17,4 @@ HWND queue::getHandle()
     return _msgWnd;
 }
 
-void queue::setCallback( function_t queue_func )
-{
-    _callback = queue_func;
-}
 } //namespace mio

@@ -22,7 +22,6 @@ public:
 
 private:
     void thread_main();
-    int queue_callback(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
     queue _queue;
