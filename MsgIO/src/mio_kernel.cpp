@@ -1,18 +1,18 @@
-#include "mio_queue.h"
+#include "mio_kernel.h"
 
 namespace mio {
 
-queue::queue()
+kernel::kernel()
 {
     _msgWnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
 }
 
-queue::~queue()
+kernel::~kernel()
 {
     DestroyWindow(_msgWnd);
 }
 
-HWND queue::getHandle()
+HWND kernel::ident()
 {
     return _msgWnd;
 }

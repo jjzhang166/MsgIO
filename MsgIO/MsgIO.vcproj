@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="include/"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;MIO_FUNCTIONAL_BOOST_ORG"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;MIO_FUNCTIONAL_BOOST_ORG;MP_MEMORY_BOOST_ORG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -152,11 +152,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\mio_loop.cpp"
+				RelativePath=".\src\mio_kernel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\src\mio_queue.cpp"
+				RelativePath=".\src\mio_loop.cpp"
 				>
 			</File>
 			<File
@@ -174,15 +174,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\memory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\mio_exception.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\mio_loop.h"
+				RelativePath=".\include\mio_kernel.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\mio_queue.h"
+				RelativePath=".\include\mio_loop.h"
 				>
 			</File>
 			<File

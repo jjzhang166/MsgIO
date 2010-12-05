@@ -3,18 +3,18 @@
 #include "unwindows.h"
 
 namespace mio {
-class queue 
+class kernel 
 {
 private: //Disable copy and assignment
-	queue(const queue&);         
-	void operator=(const queue&);
+	kernel(const kernel&);         
+	void operator=(const kernel&);
 
 public:
-    queue();
+    kernel();
 
-    ~queue();
+    ~kernel();
 
-    HWND getHandle();
+    HWND ident();
 
 private:
     HWND _msgWnd;

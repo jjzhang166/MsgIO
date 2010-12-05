@@ -12,24 +12,19 @@ loop::~loop()
 
 void loop::start()
 {
-    _thread.run(bind(&loop::thread_main, this));
-}
-
-void loop::join()
-{
-    _thread.join();
+    _writer.run(bind(&loop::thread_main, this));
 }
 
 void loop::run()
 {
     start();
-    join();
+    _writer.join();
 }
 
 void loop::thread_main()
 {
     MSG msg;
-    HWND wnd = _queue.getHandle();
+    HWND wnd = _kernel.ident();
     while (GetMessage (&msg, wnd, 0, 0))
     {
         TranslateMessage (&msg);

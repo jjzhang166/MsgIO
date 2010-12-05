@@ -1,7 +1,8 @@
 #pragma once
 
-#include "mio_queue.h"
+#include "mio_kernel.h"
 #include "mio_thread.h"
+#include "memory.h"
 
 namespace mio {
 
@@ -16,7 +17,6 @@ public:
     ~loop();
 
     void start();
-    void join();
 
     void run();
 
@@ -24,8 +24,8 @@ private:
     void thread_main();
 
 private:
-    queue _queue;
-    thread _thread;
+    kernel _kernel;
+    thread _writer;
 };
 
 } // namespace mio
