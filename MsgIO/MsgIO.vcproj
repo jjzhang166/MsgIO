@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="ws2_32.lib"
 				OutputFile="lib\$(ProjectName).lib"
 			/>
 			<Tool
@@ -191,6 +192,10 @@
 			</File>
 			<File
 				RelativePath=".\include\mio_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio_time.h"
 				>
 			</File>
 			<File

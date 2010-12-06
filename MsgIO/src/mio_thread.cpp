@@ -38,8 +38,7 @@ void thread::run( function_t func )
 
 void thread::create( DWORD (WINAPI *func)(void*), void* user )
 {
-    DWORD threadId;
-    _thread = CreateThread(NULL, 0, func, user, 0, &threadId);
+    _thread = CreateThread(NULL, 0, func, user, 0, (LPDWORD)&_id);
     if(_thread == NULL) { throw thread_error(GetLastError(), "failed to create thread"); }
 }
 
@@ -57,7 +56,7 @@ void thread::detach()
 
 bool thread::isEqual( const thread& other )
 {
-    return _thread == other._thread;
+    return _id == other._id;
 }
 
 void thread::exit( void *retVal )

@@ -35,6 +35,7 @@ private:
 
 private:
     HANDLE _thread;
+    int _id;
 
     static DWORD WINAPI trampoline(void* user);
 };

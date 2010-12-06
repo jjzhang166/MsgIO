@@ -2,7 +2,6 @@
 
 #include "mio_kernel.h"
 #include "mio_thread.h"
-#include "memory.h"
 
 namespace mio {
 
@@ -19,6 +18,7 @@ public:
     void start();
 
     void run();
+
 
 private:
     void thread_main();

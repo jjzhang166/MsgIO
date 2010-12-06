@@ -24,12 +24,12 @@ void loop::run()
 void loop::thread_main()
 {
     MSG msg;
-    HWND wnd = _kernel.ident();
-    while (GetMessage (&msg, wnd, 0, 0))
-    {
-        TranslateMessage (&msg);
-        DispatchMessage (&msg);
-    }
+//     HWND wnd = _kernel.ident();
+//     while (GetMessage (&msg, wnd, 0, 0))
+//     {
+//         TranslateMessage (&msg);
+//         DispatchMessage (&msg);
+//     }
 }
 
 } //namespace mio
