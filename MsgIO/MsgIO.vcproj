@@ -148,14 +148,10 @@
 	</References>
 	<Files>
 		<Filter
-			Name="源文件"
+			Name="src"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
-			<File
-				RelativePath=".\src\mio_kernel.cpp"
-				>
-			</File>
 			<File
 				RelativePath=".\src\mio_loop.cpp"
 				>
@@ -164,26 +160,26 @@
 				RelativePath=".\src\mio_thread.cpp"
 				>
 			</File>
+			<Filter
+				Name="imp"
+				>
+				<File
+					RelativePath=".\src\mio_loop_impl.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\mio_loop_impl.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
-			Name="头文件"
+			Name="include"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\include\functional.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\memory.h"
-				>
-			</File>
-			<File
 				RelativePath=".\include\mio_exception.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio_kernel.h"
 				>
 			</File>
 			<File
@@ -191,23 +187,79 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\mio_loop.hmpl"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\include\mio_thread.h"
 				>
 			</File>
-			<File
-				RelativePath=".\include\mio_time.h"
+			<Filter
+				Name="base"
 				>
-			</File>
-			<File
-				RelativePath=".\include\unwindows.h"
-				>
-			</File>
+				<File
+					RelativePath=".\include\functional.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\memory.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\unwindows.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="资源文件"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="cclog"
+			>
+			<File
+				RelativePath=".\include\cclog\cclog.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_debugoutput.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_debugoutput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_null.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_null.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_ostream.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_ostream.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

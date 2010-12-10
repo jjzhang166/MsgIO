@@ -62,4 +62,48 @@ private:
     CRITICAL_SECTION _mutex;
 };
 
+class thread_scoped_lock {
+public:
+    thread_scoped_lock() : _mutex(NULL) { }
+
+    thread_scoped_lock(thread_mutex& mutex) : _mutex(NULL)
+    {
+        mutex.lock();
+        _mutex = &mutex;
+    }
+
+    ~thread_scoped_lock()
+    {
+        if(_mutex) {
+            _mutex->unlock();
+        }
+    }
+
+public:
+    void unlock()
+    {
+        if(_mutex) {
+            _mutex->unlock();
+            _mutex = NULL;
+        }
+    }
+
+    void relock(thread_mutex& mutex)
+    {
+        unlock();
+        mutex.lock();
+        _mutex = &mutex;
+    }
+
+    bool owns() const
+    {
+        return _mutex != NULL;
+    }
+
+private:
+    thread_mutex* _mutex;
+private:
+    thread_scoped_lock(const thread_scoped_lock&);
+};
+
 } //namespace mio

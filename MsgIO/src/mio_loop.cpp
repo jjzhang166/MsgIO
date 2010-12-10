@@ -1,35 +1,41 @@
 #include "mio_loop.h"
-#include <iostream>
+#include "mio_loop_impl.h"
+
+#define IMP (static_cast<loop_impl*>(_impl))
 
 namespace mio {
 loop::loop()
 {
+    _impl = new loop_impl();
 }
 
 loop::~loop()
 {
+    delete IMP;
 }
 
 void loop::start()
 {
-    _writer.run(bind(&loop::thread_main, this));
+    IMP->start();
 }
 
 void loop::run()
 {
-    start();
-    _writer.join();
+    IMP->run();
 }
 
-void loop::thread_main()
+mio::shared_handler loop::add_handler_impl( shared_handler sh )
 {
-    MSG msg;
-//     HWND wnd = _kernel.ident();
-//     while (GetMessage (&msg, wnd, 0, 0))
-//     {
-//         TranslateMessage (&msg);
-//         DispatchMessage (&msg);
-//     }
+    return IMP->add_handler_impl(sh);
 }
 
+void loop::remove_handler( int fd )
+{
+    return IMP->remove_handler(fd);
+}
+
+void loop::submit_impl( task_t f )
+{
+    IMP->submit_impl(f);
+}
 } //namespace mio
