@@ -46,4 +46,9 @@ bool loop::is_end() const
 {
     return IMPL->is_end();
 }
+
+void loop::join()
+{
+    IMPL->join();
+}
 } //namespace mio

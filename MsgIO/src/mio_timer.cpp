@@ -1,8 +1,6 @@
 #include "mio_timer.h"
 #include "mio.h"
 
-#include <cclog/cclog.h>
-
 namespace mio {
 namespace {
 static void timer_callback(HWND wnd, HANDLE flag, double value_sec, double internal_sec) 
@@ -24,16 +22,12 @@ kernel_timer::kernel_timer( HWND wnd, double value_sec, double internal_sec )
 {
     _flag = CreateEvent(NULL, FALSE, FALSE, NULL);
     _thread.run(mio::bind(timer_callback, wnd, _flag, value_sec, internal_sec));
-    LOG_INFO("Timer ", timer_ident(), " started");
 }
 
 kernel_timer::~kernel_timer()
 {
     SetEvent(_flag);
-    if (!CloseHandle(_flag)) {
-        LOG_ERROR("Timer release failed");
-    }
-    LOG_INFO("Timer ", timer_ident(), " released");
+    CloseHandle(_flag);
 }
 
 int kernel_timer::timer_ident()

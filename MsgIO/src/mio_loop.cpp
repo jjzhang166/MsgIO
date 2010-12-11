@@ -49,9 +49,7 @@ bool loop_impl::is_end() const
 
 void loop_impl::join()
 {
-    if (is_running()) {
-        _thread.join();
-    }
+    _thread.join();
 }
 
 void loop_impl::thread_main()
@@ -129,7 +127,7 @@ void loop_impl::set_handler( shared_handler sh )
 {
     thread_scoped_lock lock(_handlers_mutex);
     if (_handlers.find(sh->ident()) != _handlers.end()) {
-        LOG_FATAL("HANDLE ALREADY exist!");
+        throw std::logic_error("HANDLE ALREADY exist!");
         return;
     }
     _handlers[sh->ident()] = sh;

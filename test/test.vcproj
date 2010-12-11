@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_listen_conn.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\test_submit.cpp"
 				>
 			</File>
