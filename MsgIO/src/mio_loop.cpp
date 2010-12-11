@@ -1,22 +1,10 @@
-#include "mio_loop_impl.h"
+#include "mio_loop.h"
+
+#include <cclog/cclog.h>
 
 #define WAIT_TIME_OUT 1000
 
 namespace mio {
-
-namespace MESSAGE {
-    enum {
-        TASK = WM_USER + 10,
-        IO_MSG
-    };
-}
-
-namespace EVENT {
-    enum {
-        READ = FD_ACCEPT | FD_READ,
-        WRITE = FD_WRITE
-    };
-}
 
 loop_impl::loop_impl() : _end_flag(false)
 {
@@ -84,9 +72,9 @@ void loop_impl::handle_message()
                 (*task)();
             }
             break;
-        case MESSAGE::IO_MSG:
+        case MESSAGE::IO_SOCKET:
             {
-                handle_io(msg);
+                handle_io_socket(msg);
             }
             break;
         default:
@@ -96,7 +84,7 @@ void loop_impl::handle_message()
 }
 
 
-void loop_impl::handle_io( const MSG& msg )
+void loop_impl::handle_io_socket( const MSG& msg )
 {
     int socket = msg.wParam;
     int error = WSAGETSELECTERROR(msg.lParam);
@@ -110,6 +98,10 @@ void loop_impl::handle_io( const MSG& msg )
 void loop_impl::set_handler( shared_handler sh )
 {
     thread_scoped_lock lock(_handlers_mutex);
+    if (_handlers.find(sh->ident()) != _handlers.end()) {
+        LOG_FATAL("HANDLE ALREADY exist!");
+        return;
+    }
     _handlers[sh->ident()] = sh;
 }
 
@@ -129,7 +121,7 @@ void loop_impl::submit_impl( task_t f )
 shared_handler loop_impl::add_handler_impl( shared_handler sh )
 {
     set_handler(sh);
-    WSAAsyncSelect(sh->ident(), _hwnd, MESSAGE::IO_MSG, EVENT::READ );
+    WSAAsyncSelect(sh->ident(), _hwnd, MESSAGE::IO_SOCKET, EVENT::READ );
     return sh;
 }
 
@@ -146,16 +138,6 @@ void loop_impl::connect( int socket_family, int socket_type, int protocol, const
 int loop_impl::listen( int socket_family, int socket_type, int protocol, const sockaddr* addr, int addrlen, listen_callback_t callback, int backlog /*= 1024*/ )
 {
     return 0;
-}
-
-int loop_impl::add_timer( double value_sec, double interval_sec, function<bool ()> callback )
-{
-    return 0;
-}
-
-void loop_impl::remove_timer( int ident )
-{
-
 }
 
 } //namespace mio

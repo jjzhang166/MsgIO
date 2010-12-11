@@ -24,12 +24,11 @@ public:
 
     void run(function_t func);
     void join();
-    void detach();
 
+    int ident();
     bool isEqual(const thread& other);
     
     static void exit(void *retVal = NULL);
-
 private:
     void create(DWORD (WINAPI *func)(void*), void* user);
 

@@ -6,7 +6,22 @@
 #include <memory>
 #include <hash_map>
 
+#define IMPL (static_cast<loop_impl*>(_impl))
 namespace mio {
+namespace MESSAGE {
+    enum {
+        TASK = WM_USER + 10,
+        IO_SOCKET,
+        IO_TIMER
+    };
+}
+
+namespace EVENT {
+    enum {
+        READ = FD_ACCEPT | FD_READ,
+        WRITE = FD_WRITE
+    };
+}
 
 class loop_impl
 {
@@ -50,11 +65,6 @@ public:
         listen_callback_t callback,
         int backlog = 1024);
 
-    int add_timer(double value_sec, double interval_sec,
-        function<bool ()> callback);
-
-    void remove_timer(int ident);
-
 private:
     void set_handler(shared_handler sh);
     void reset_handler(int fd);
@@ -64,7 +74,7 @@ private:
 
     void thread_main();
     void handle_message();
-    void handle_io(const MSG& msg);
+    void handle_io_socket(const MSG& msg);
 
 private:
     bool _end_flag;

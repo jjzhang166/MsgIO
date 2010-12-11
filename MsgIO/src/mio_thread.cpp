@@ -26,7 +26,8 @@ thread::thread()
 
 thread::~thread()
 {
-
+    BOOL ret = CloseHandle(_thread);
+    if(!ret) { throw thread_error(GetLastError(), "failed to detach thread"); }
 }
 
 void thread::run( function_t func )
@@ -48,10 +49,9 @@ void thread::join()
     if(ret != WAIT_OBJECT_0) { throw thread_error(GetLastError(), "failed to join thread"); }
 }
 
-void thread::detach()
+int thread::ident()
 {
-    BOOL ret = CloseHandle(_thread);
-    if(!ret) { throw thread_error(GetLastError(), "failed to detach thread"); }
+    return (int)_thread;
 }
 
 bool thread::isEqual( const thread& other )

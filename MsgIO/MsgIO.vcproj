@@ -164,11 +164,19 @@
 				Name="imp"
 				>
 				<File
-					RelativePath=".\src\mio_loop_impl.cpp"
+					RelativePath=".\src\mio_loop.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\mio_loop_impl.h"
+					RelativePath=".\src\mio_loop.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\mio_timer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\mio_timer.h"
 					>
 				</File>
 			</Filter>
