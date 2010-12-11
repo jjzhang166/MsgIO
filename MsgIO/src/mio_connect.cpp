@@ -8,7 +8,8 @@ namespace  {
 class connect_task {
 public:
 	typedef loop::connect_callback_t connect_callback_t;
-
+#pragma warning(push)
+#pragma warning(disable: 4200)
 	struct pack {
 		int        socket_family;
 		int        socket_type;
@@ -17,6 +18,7 @@ public:
 		int        timeout_msec;
 		sockaddr   addr[0];
 	};
+#pragma warning(pop)
 
 	connect_task(
 			int socket_family, int socket_type, int protocol,
