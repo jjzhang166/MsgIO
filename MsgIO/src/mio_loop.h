@@ -9,7 +9,7 @@
 #define IMPL (static_cast<loop_impl*>(_impl))
 namespace mio {
 namespace MESSAGE {
-    enum {
+    enum MSG {
         TASK = WM_USER + 10,
         IO_SOCKET,
         IO_TIMER
@@ -17,7 +17,7 @@ namespace MESSAGE {
 }
 
 namespace EVENT {
-    enum {
+    enum EV {
         READ = FD_ACCEPT | FD_READ,
         WRITE = FD_WRITE
     };
@@ -75,11 +75,15 @@ private:
     void thread_main();
     void handle_message();
     void handle_io_socket(const MSG& msg);
+    void handle_io_timer(const MSG&msg);
 
 private:
-    bool _end_flag;
     HWND _hwnd;
-    std::auto_ptr<thread> _thread;
+    HANDLE _start;// use to sync create of hwnd
+    
+    thread _thread;
+    bool _is_running;
+
     stdext::hash_map<int, shared_handler> _handlers;
     thread_mutex _handlers_mutex;
 

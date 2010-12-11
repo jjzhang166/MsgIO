@@ -164,6 +164,10 @@
 				Name="imp"
 				>
 				<File
+					RelativePath=".\src\mio_connect.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\mio_loop.cpp"
 					>
 				</File>

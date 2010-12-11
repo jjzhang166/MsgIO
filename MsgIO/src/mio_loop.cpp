@@ -6,21 +6,23 @@
 
 namespace mio {
 
-loop_impl::loop_impl() : _end_flag(false)
+loop_impl::loop_impl() : 
+            _is_running(false),
+            _start(CreateEvent(NULL, TRUE, FALSE, NULL)),
+            _hwnd(0)
 {
-    _hwnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
+    _thread.run(bind(&loop_impl::thread_main, this));
+    WaitForSingleObject(_start, INFINITE);
 }
 
 loop_impl::~loop_impl()
 {
-    ::DestroyWindow(_hwnd);
 }
 
 void loop_impl::start()
 {
     if (!is_running()) {
-        _thread.reset(new thread());
-        _thread->run(bind(&loop_impl::thread_main, this));
+        SetEvent(_start);
     }
 }
 
@@ -32,33 +34,46 @@ void loop_impl::run()
 
 bool loop_impl::is_running() const
 {
-    return _thread.get() == NULL;
+    return _is_running;
 }
 
 void loop_impl::end()
 {
-    _end_flag = true;
+    _is_running = false;
 }
 
 bool loop_impl::is_end() const
 {
-    return _end_flag;
+    return !_is_running;
 }
 
 void loop_impl::join()
 {
     if (is_running()) {
-        _thread->join();
+        _thread.join();
     }
 }
 
 void loop_impl::thread_main()
 {
+    _hwnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
+    SetEvent(_start);
+
+    LOG_TRACE("Loop start");
+    WaitForSingleObject(_start, INFINITE);
+    _is_running = true;
+
     while(true) {
-        if (_end_flag) { break; }
+        if (!_is_running) { break; }
 
         DWORD ret = MsgWaitForMultipleObjects(0, NULL, FALSE, WAIT_TIME_OUT, QS_ALLEVENTS);
+        if (ret != WAIT_TIMEOUT) {
+            handle_message();
+        }
     }
+
+    LOG_TRACE("Loop ended");
+    ::DestroyWindow(_hwnd);
 }
 
 void loop_impl::handle_message()
@@ -77,6 +92,11 @@ void loop_impl::handle_message()
                 handle_io_socket(msg);
             }
             break;
+        case MESSAGE::IO_TIMER:
+            {
+                handle_io_timer(msg);
+            }
+            break;
         default:
             break;
         }
@@ -92,6 +112,16 @@ void loop_impl::handle_io_socket( const MSG& msg )
     if (e & EVENT::READ) {
         event ev;
         (*_handlers[socket])(ev);
+    }
+}
+
+
+void loop_impl::handle_io_timer( const MSG&msg )
+{
+    int ident = static_cast<int>(msg.wParam);
+    event ev;
+    if (!(*_handlers[ident])(ev)) {
+        reset_handler(ident);
     }
 }
 
@@ -114,7 +144,7 @@ void loop_impl::reset_handler( int fd )
 void loop_impl::submit_impl( task_t f )
 {
     std::auto_ptr<task_t> task(new task_t(f));
-    PostMessage(_hwnd, MESSAGE::TASK, (WPARAM)task.get(), NULL);
+    PostMessage(_hwnd, MESSAGE::TASK, reinterpret_cast<WPARAM>(task.get()), NULL);
     task.release();
 }
 
@@ -129,15 +159,6 @@ void loop_impl::remove_handler( int ident )
 {
     reset_handler(ident);
     WSAAsyncSelect(ident, _hwnd, NULL, NULL );
-}
-
-void loop_impl::connect( int socket_family, int socket_type, int protocol, const sockaddr* addr, int addrlen, double timeout_sec, connect_callback_t callback )
-{
-}
-
-int loop_impl::listen( int socket_family, int socket_type, int protocol, const sockaddr* addr, int addrlen, listen_callback_t callback, int backlog /*= 1024*/ )
-{
-    return 0;
 }
 
 } //namespace mio

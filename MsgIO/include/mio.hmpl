@@ -89,7 +89,7 @@ private: //Disable copy and assignment
     void operator=(const event&);
 
 public:
-    event();
+    event(){};
 };
 
 class basic_handler 

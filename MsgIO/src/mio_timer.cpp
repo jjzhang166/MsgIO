@@ -12,19 +12,19 @@ static void timer_callback(HWND wnd, HANDLE flag, double value_sec, double inter
     }
 
     while(true) {
+        PostMessage(wnd, MESSAGE::IO_TIMER, reinterpret_cast<WPARAM>(flag), NULL );
         if (WaitForSingleObject(flag, static_cast<DWORD>(internal_sec * 1000)) != WAIT_TIMEOUT) {
             return;
         }
-
-        PostMessage(wnd, MESSAGE::IO_TIMER, NULL, NULL );
     }
-}
-}
+} 
+} // noname namespace
 
 kernel_timer::kernel_timer( HWND wnd, double value_sec, double internal_sec )
 {
     _flag = CreateEvent(NULL, FALSE, FALSE, NULL);
     _thread.run(mio::bind(timer_callback, wnd, _flag, value_sec, internal_sec));
+    LOG_INFO("Timer ", timer_ident(), " started");
 }
 
 kernel_timer::~kernel_timer()
@@ -33,17 +33,19 @@ kernel_timer::~kernel_timer()
     if (!CloseHandle(_flag)) {
         LOG_ERROR("Timer release failed");
     }
+    LOG_INFO("Timer ", timer_ident(), " released");
 }
 
 int kernel_timer::timer_ident()
 {
-    return _thread.ident();
+    return (int)_flag;
 }
 
 #pragma warning(push)
 #pragma warning(disable:4355)
-timer_handler::timer_handler( HWND hwnd, double value_sec, double internal_sec, callback_t callback ) : kernel_timer(hwnd, value_sec, internal_sec), 
-                        basic_handler(timer_ident(), this )
+timer_handler::timer_handler( HWND hwnd, double value_sec, double internal_sec, callback_t callback ) :    kernel_timer(hwnd, value_sec, internal_sec), 
+        basic_handler(timer_ident(), this ),
+        _callback(callback)
 {
 
 }
@@ -51,7 +53,7 @@ timer_handler::timer_handler( HWND hwnd, double value_sec, double internal_sec, 
 
 bool timer_handler::operator()( event& e )
 {
-    return _callback;
+    return _callback();
 }
 
 int loop::add_timer(double value_sec, double interval_sec,

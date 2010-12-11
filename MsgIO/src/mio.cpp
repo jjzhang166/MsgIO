@@ -36,4 +36,14 @@ void loop::submit_impl( task_t f )
 {
     IMPL->submit_impl(f);
 }
+
+void loop::end()
+{
+    IMPL->end();
+}
+
+bool loop::is_end() const
+{
+    return IMPL->is_end();
+}
 } //namespace mio
