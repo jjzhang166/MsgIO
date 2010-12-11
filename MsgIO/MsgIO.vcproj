@@ -180,6 +180,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\mio_out.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\mio_timer.cpp"
 					>
 				</File>

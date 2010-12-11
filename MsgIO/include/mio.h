@@ -56,6 +56,13 @@ public:
         function<bool ()> callback);
 
     void remove_timer(int ident);
+    
+    typedef void (*finalize_t)(void* user);
+
+	void write(int fd, const void* buf, size_t size);
+
+	void write(int fd, const void* buf, size_t size,
+			finalize_t fin, void* user);
 
     template <typename Handler>
     shared_ptr<Handler> add_handler();
@@ -146,6 +153,44 @@ private: //Disable copy and assignment
 
 public:
     event(){};
+};
+
+class xfer {
+public:
+	xfer();
+	~xfer();
+
+	typedef loop::finalize_t finalize_t;
+
+	void push_write(const void* buf, size_t size);
+
+	void push_writev(const struct iovec* vec, size_t veclen);
+
+	void push_sendfile(int infd, uint64_t off, size_t len);
+
+	void push_finalize(finalize_t fin, void* user);
+
+	template <typename T>
+	void push_finalize(std::auto_ptr<T> fin);
+
+	template <typename T>
+	void push_finalize(mp::shared_ptr<T> fin);
+
+	bool empty() const;
+
+	void clear();
+
+	void migrate(xfer* to);
+
+protected:
+	char* m_head;
+	char* m_tail;
+	size_t m_free;
+
+	void reserve(size_t reqsz);
+
+private:
+	xfer(const xfer&);
 };
 
 class basic_handler 
