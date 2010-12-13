@@ -1,8 +1,8 @@
 #pragma once
 
-#include "mio/functional.h"
-#include "mio/unwindows.h"
-#include "mio/memory.h"
+#include "functional.h"
+#include "unwindows.h"
+#include "memory.h"
 
 namespace mio {
 

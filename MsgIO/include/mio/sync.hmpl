@@ -8,65 +8,65 @@ namespace mio {
 template <typename T>
 class sync {
 public:
-	sync() : m_obj() { }
+	sync() : _obj() { }
 %varlen_each do |gen|
 	template <[%gen.template%]>
-	sync([%gen.args%]) : m_obj([%gen.params%]) { }
+	sync([%gen.args%]) : _obj([%gen.params%]) { }
 %end
 
 	~sync() { }
 
-	T& unsafe_ref() { return m_obj; }
-	const T& unsafe_ref() const { return m_obj; }
+	T& unsafe_ref() { return _obj; }
+	const T& unsafe_ref() const { return _obj; }
 
 	class ref {
 	public:
-		ref(sync<T>& obj) : m_ref(NULL)
+		ref(sync<T>& obj) : _ref(NULL)
 		{
-			obj.m_mutex.lock();
-			m_ref = &obj;
+			obj._mutex.lock();
+			_ref = &obj;
 		}
 	
-		ref() : m_ref(NULL) { }
+		ref() : _ref(NULL) { }
 	
 		~ref() { reset(); }
 	
 		void reset()
 		{
-			if(m_ref) {
-				m_ref->m_mutex.unlock();
-				m_ref = NULL;
+			if(_ref) {
+				_ref->_mutex.unlock();
+				_ref = NULL;
 			}
 		}
 	
 		void reset(sync<T>& obj)
 		{
 			reset();
-			obj.m_mutex.lock();
-			m_ref = &obj;
+			obj._mutex.lock();
+			_ref = &obj;
 		}
 
 		void swap(sync<T>& obj)
 		{
-			sync<T>* tmp = m_ref;
-			m_ref = obj.m_ref;
-			obj.m_ref = tmp;
+			sync<T>* tmp = _ref;
+			_ref = obj._ref;
+			obj._ref = tmp;
 		}
 	
-		T& operator*() { return m_ref->m_obj; }
+		T& operator*() { return _ref->_obj; }
 		T* operator->() { return &operator*(); }
-		const T& operator*() const { return m_ref->m_obj; }
+		const T& operator*() const { return _ref->_obj; }
 		const T* operator->() const { return &operator*(); }
 
-		operator bool() const { return m_ref != NULL; }
+		operator bool() const { return _ref != NULL; }
 
-		pthread_mutex& get_mutex()
+		thread_mutex& get_mutex()
 		{
-			return m_ref->m_mutex;
+			return _ref->_mutex;
 		}
 	
 	protected:
-		sync<T>* m_ref;
+		sync<T>* _ref;
 	
 	private:
 		ref(const ref&);
@@ -80,8 +80,8 @@ public:
 
 		auto_ref(auto_ref& o)
 		{
-			ref::m_ref = o.m_ref;
-			o.m_ref = NULL;
+			ref::_ref = o._ref;
+			o._ref = NULL;
 		}
 
 		auto_ref& operator= (auto_ref& o)
@@ -97,8 +97,8 @@ public:
 	}
 
 private:
-	T m_obj;
-	pthread_mutex m_mutex;
+	T _obj;
+	thread_mutex _mutex;
 	friend class ref;
 
 private:

@@ -109,7 +109,8 @@ void loop_impl::handle_io_socket( const MSG& msg )
     int e = WSAGETSELECTEVENT(msg.lParam);
     if (e & EVENT::READ) {
         event ev;
-        (*_handlers[socket])(ev);
+        (*(*_handlers.lock())[socket])(ev);
+        //(*_handlers[socket])(ev);
     }
 }
 
@@ -118,25 +119,25 @@ void loop_impl::handle_io_timer( const MSG&msg )
 {
     int ident = static_cast<int>(msg.wParam);
     event ev;
-    if (!(*_handlers[ident])(ev)) {
+    //if (!(*_handlers[ident])(ev)) {
+    if (!(*(*_handlers.lock())[ident])(ev)) {
         reset_handler(ident);
     }
 }
 
 void loop_impl::set_handler( shared_handler sh )
 {
-    thread_scoped_lock lock(_handlers_mutex);
-    if (_handlers.find(sh->ident()) != _handlers.end()) {
+    concurrency_container::auto_ref ref = _handlers.lock();
+    if (ref->find(sh->ident()) != ref->end()) {
         throw std::logic_error("HANDLE ALREADY exist!");
         return;
     }
-    _handlers[sh->ident()] = sh;
+
 }
 
 void loop_impl::reset_handler( int fd )
 {
-    thread_scoped_lock lock(_handlers_mutex);
-    _handlers.erase(fd);
+    _handlers.lock()->erase(fd);
 }
 
 void loop_impl::submit_impl( task_t f )

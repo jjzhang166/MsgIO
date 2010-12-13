@@ -2,6 +2,7 @@
 
 #include "mio/mio.h"
 #include "mio/thread.h"
+#include "mio/sync.h"
 
 #include <memory>
 #include <hash_map>
@@ -84,8 +85,9 @@ private:
     thread _thread;
     bool _is_running;
 
-    stdext::hash_map<int, shared_handler> _handlers;
-    thread_mutex _handlers_mutex;
+    typedef stdext::hash_map<int, shared_handler> map_container;
+    typedef sync<map_container> concurrency_container;
+    concurrency_container _handlers;
 
     friend class loop;
 };
