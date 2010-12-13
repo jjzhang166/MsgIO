@@ -194,16 +194,26 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="mio"
 			>
 			<File
-				RelativePath=".\include\mio.h"
+				RelativePath=".\include\mio\exception.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\mio.hmpl"
+				RelativePath=".\include\mio\functional.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\memory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\mio.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\mio.hmpl"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -215,29 +225,29 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\include\mio_exception.h"
+				RelativePath=".\include\mio\sync.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\mio_thread.h"
+				RelativePath=".\include\mio\sync.hmpl"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\include\mio\thread.h"
 				>
 			</File>
-			<Filter
-				Name="base"
+			<File
+				RelativePath=".\include\mio\unwindows.h"
 				>
-				<File
-					RelativePath=".\include\functional.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\memory.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\unwindows.h"
-					>
-				</File>
-			</Filter>
+			</File>
 		</Filter>
 		<Filter
 			Name="资源文件"

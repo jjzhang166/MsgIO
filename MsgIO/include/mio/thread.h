@@ -1,8 +1,8 @@
 #pragma once
 
-#include "mio_exception.h"
-#include "functional.h"
-#include "unwindows.h"
+#include "mio/exception.h"
+#include "mio/functional.h"
+#include "mio/unwindows.h"
 
 namespace mio {
 class thread_error : system_error {

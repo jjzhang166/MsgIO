@@ -19,4 +19,5 @@ function preprocess() {
 	fi
 }
 
-preprocess include/mio.hmpl
+preprocess include/mio/mio.hmpl
+preprocess include/mio/sync.hmpl

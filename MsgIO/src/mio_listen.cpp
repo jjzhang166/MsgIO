@@ -1,6 +1,7 @@
-#include "mio.h"
+#include "mio/mio.h"
+#include "mio/unwindows.h"
+
 #include "mio_loop.h"
-#include "unwindows.h"
 
 namespace mio {
 namespace  {

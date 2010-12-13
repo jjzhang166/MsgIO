@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mio.h"
-#include "mio_thread.h"
+#include "mio/mio.h"
+#include "mio/thread.h"
 
 #include <memory>
 #include <hash_map>

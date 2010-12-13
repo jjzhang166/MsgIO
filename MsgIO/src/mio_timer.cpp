@@ -1,5 +1,5 @@
 #include "mio_timer.h"
-#include "mio.h"
+#include "mio/mio.h"
 
 namespace mio {
 namespace {
