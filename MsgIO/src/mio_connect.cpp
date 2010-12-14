@@ -46,7 +46,7 @@ public:
 		int fd = ::socket(m->socket_family, m->socket_type, m->protocol);
 		if(fd < 0) {
 			err = WSAGetLastError();
-			goto out;
+			goto result;
 		}
 
         WSAEVENT hEvent = WSACreateEvent();
@@ -64,7 +64,7 @@ public:
 
         DWORD ret = WSAWaitForMultipleEvents(1, &hEvent, FALSE,m->timeout_msec, FALSE);
 		if(ret == WSA_WAIT_EVENT_0) {
-            goto out;
+            goto result;
         }
 
         if(ret == WSA_WAIT_TIMEOUT) {
@@ -77,7 +77,7 @@ public:
 		::closesocket(fd);
 		fd = -1;
 
-	out:
+	result:
 		::free(m);
 		m_callback(fd, err);
 

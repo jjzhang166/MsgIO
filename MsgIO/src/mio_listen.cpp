@@ -1,6 +1,5 @@
 #include "mio/mio.h"
 #include "mio/unwindows.h"
-
 #include "mio_loop.h"
 
 namespace mio {
@@ -9,16 +8,17 @@ class listen_handler : public handler {
 public:
 	typedef loop::listen_callback_t listen_callback_t;
 
-	listen_handler(int fd, listen_callback_t callback) :
-		handler(fd), _callback(callback) {}
+	listen_handler(int fd, HWND hwnd, listen_callback_t callback) :
+		handler(fd), _hwnd(hwnd), _callback(callback) {}
 
 	~listen_handler() {}
 
 	void on_read(event& e)
 	{
-		while(true) {
+		//while(true) {
 			int err = 0;
 			int sock = ::accept(fd(), NULL, NULL);
+            WSAAsyncSelect(sock, _hwnd, NULL, NULL);
 			if(sock == INVALID_SOCKET) {
                 err = WSAGetLastError();
                 if(err == WSAEWOULDBLOCK || err == WSAEINTR) {
@@ -35,11 +35,12 @@ public:
 			} catch (...) {
 				::closesocket(sock);
 			}
-		}
+		//}
 	}
 
 private:
 	listen_callback_t _callback;
+    HWND _hwnd;
 
 private:
 	listen_handler();
@@ -75,7 +76,7 @@ int loop::listen(
     }
 
     try {
-        add_handler<listen_handler>(lsock, callback);
+        add_handler<listen_handler>(lsock, IMPL->_hwnd, callback);
     } catch (...) {
         ::closesocket(lsock);
         throw;

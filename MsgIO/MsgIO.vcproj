@@ -176,6 +176,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\mio_out.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\mio_out.h"
 					>
 				</File>
