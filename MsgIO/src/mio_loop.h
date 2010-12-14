@@ -98,8 +98,8 @@ private:
     concurrency_task_queue _task_queue;
     thread_semaphore _sem;
 
-    typedef sync<std::vector<shared_ptr<thread>>> worker_queue;
-    worker_queue _workers;
+    typedef sync<std::vector<shared_ptr<thread>>> cocurrency_worker_queue;
+    cocurrency_worker_queue _workers;
 
     friend class loop;
 };

@@ -37,7 +37,7 @@ void loop_impl::run( int num )
 void loop_impl::add_thread( int num )
 {
 
-    worker_queue::auto_ref ref = _workers.lock();
+    cocurrency_worker_queue::auto_ref ref = _workers.lock();
     for (int i = 0;i<num;++i) {
         ref->push_back(shared_ptr<thread>(new thread()));
 
