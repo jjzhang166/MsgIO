@@ -14,7 +14,8 @@ namespace MESSAGE {
     enum MSG {
         TASK = WM_USER + 10,
         IO_SOCKET,
-        IO_TIMER
+        IO_TIMER,
+        EXIT
     };
 }
 
@@ -79,7 +80,7 @@ private:
 
     void thread_main();
     void worker_main();
-    void handle_message();
+    bool handle_message();
     void handle_io_socket(WPARAM wParam, LPARAM lParam);
     void handle_io_timer(WPARAM wParam, LPARAM lParam);
 

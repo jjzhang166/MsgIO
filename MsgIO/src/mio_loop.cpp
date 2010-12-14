@@ -62,6 +62,7 @@ bool loop_impl::is_running() const
 void loop_impl::end()
 {
     _is_running = false;
+    PostMessage(_hwnd, MESSAGE::EXIT, NULL, NULL);
     _sem.signal(_workers.unsafe_ref().size());
 }
 
@@ -87,11 +88,13 @@ void loop_impl::thread_main()
     WaitForSingleObject(_start, INFINITE);
 
     while(true) {
-        if (!_is_running) { break; }
+        /*if (!_is_running) { break; }*/
 
         DWORD ret = MsgWaitForMultipleObjects(0, NULL, FALSE, WAIT_TIME_OUT, QS_ALLEVENTS);
         if (ret != WAIT_TIMEOUT) {
-            handle_message();
+            if (handle_message()) {
+                break;
+            }
         }
     }
 
@@ -99,7 +102,7 @@ void loop_impl::thread_main()
     ::DestroyWindow(_hwnd);
 }
 
-void loop_impl::handle_message()
+bool loop_impl::handle_message()
 {
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
@@ -123,10 +126,16 @@ void loop_impl::handle_message()
                 //handle_io_timer(msg);
             }
             break;
+        case MESSAGE::EXIT:
+            {
+                return true;
+            }
+            break;
         default:
             break;
         }
     }
+    return false;
 }
 
 
