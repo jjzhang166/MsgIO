@@ -12,8 +12,7 @@
 namespace mio {
 namespace MESSAGE {
     enum MSG {
-        TASK = WM_USER + 10,
-        IO_SOCKET,
+        IO_SOCKET = WM_USER + 10,
         IO_TIMER,
         EXIT
     };
@@ -80,13 +79,12 @@ private:
 
     void thread_main();
     void worker_main();
-    bool handle_message();
+    bool handle_message(); // return true means get Exit message
     void handle_io_socket(WPARAM wParam, LPARAM lParam);
     void handle_io_timer(WPARAM wParam, LPARAM lParam);
 
 private:
     HWND _hwnd;
-    HANDLE _start;// use to sync create of hwnd
     
     thread _thread;
     bool _is_running;

@@ -84,8 +84,6 @@ void loop_impl::thread_main()
     _hwnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
 
     while(true) {
-        /*if (!_is_running) { break; }*/
-
         DWORD ret = MsgWaitForMultipleObjects(0, NULL, FALSE, WAIT_TIME_OUT, QS_ALLEVENTS);
         if (ret != WAIT_TIMEOUT) {
             if (handle_message()) {
@@ -104,23 +102,14 @@ bool loop_impl::handle_message()
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         switch (msg.message) {
-        case MESSAGE::TASK:
-            {
-                std::auto_ptr<task_t> task(reinterpret_cast<task_t*>(msg.wParam));
-                this->submit_impl(task.get());
-                task.release();
-            }
-            break;
         case MESSAGE::IO_SOCKET:
             {
                 submit_impl(bind(&loop_impl::handle_io_socket, this, msg.wParam, msg.lParam));
-                //handle_io_socket(msg);
             }
             break;
         case MESSAGE::IO_TIMER:
             {
                 submit_impl(bind(&loop_impl::handle_io_timer, this, msg.wParam, msg.lParam));
-                //handle_io_timer(msg);
             }
             break;
         case MESSAGE::EXIT:
@@ -144,7 +133,6 @@ void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
     if (e & EVENT::READ) {
         event ev;
         (*(*_handlers.lock())[socket])(ev);
-        //(*_handlers[socket])(ev);
     }
 }
 
@@ -153,7 +141,6 @@ void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
 {
     int ident = static_cast<int>(wParam);
     event ev;
-    //if (!(*_handlers[ident])(ev)) {
     if (!(*(*_handlers.lock())[ident])(ev)) {
         reset_handler(ident);
     }
@@ -178,7 +165,6 @@ void loop_impl::reset_handler( int fd )
 void loop_impl::submit_impl( task_t f )
 {
     std::auto_ptr<task_t> task(new task_t(f));
-    //PostMessage(_hwnd, MESSAGE::TASK, reinterpret_cast<WPARAM>(task.get()), NULL);
     _task_queue.lock()->push(shared_ptr<task_t>(task.get()));
     _sem.signal();
     task.release();
