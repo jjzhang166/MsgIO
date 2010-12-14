@@ -16,6 +16,8 @@ loop_impl::loop_impl() :
 
 loop_impl::~loop_impl()
 {
+    end();
+    join();
 }
 
 void loop_impl::start( int num )

@@ -57,9 +57,5 @@ void test_listen_conn() {
             (struct sockaddr*)&addr, sizeof(addr),
             0.0, connected);
     }
-
-    Sleep(10000);
-
-    lo.end();
-    lo.join();
+    ::Sleep(5000);
 }
