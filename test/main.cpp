@@ -11,8 +11,8 @@ int main(void) {
     try
     {
         test_timer();
-        //test_submit();
-        //test_listen_conn();
+        test_submit();
+        test_listen_conn();
     }
     catch (std::exception &e)
     {

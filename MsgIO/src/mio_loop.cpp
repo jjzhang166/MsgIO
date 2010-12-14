@@ -63,7 +63,9 @@ void loop_impl::end()
 {
     _is_running = false;
     PostMessage(_hwnd, MESSAGE::EXIT, NULL, NULL);
-    _sem.signal(_workers.unsafe_ref().size());
+    for (int i = 0;i<(int)_workers.unsafe_ref().size();++i) {
+        submit_impl(NULL);
+    }
 }
 
 bool loop_impl::is_end() const
@@ -100,6 +102,7 @@ void loop_impl::thread_main()
 
     LOG_TRACE("Loop ended");
     ::DestroyWindow(_hwnd);
+    _hwnd = NULL;
 }
 
 bool loop_impl::handle_message()
@@ -190,6 +193,7 @@ void loop_impl::submit_impl( task_t f )
 void loop_impl::submit_impl( task_t *f )
 {
     _task_queue.lock()->push(shared_ptr<task_t>(f));
+    _sem.signal();
 }
 
 shared_handler loop_impl::add_handler_impl( shared_handler sh )
@@ -210,14 +214,14 @@ void loop_impl::worker_main()
     while(true){
         _sem.wait();
 
-        if (!is_running())
-            return;
-
         shared_ptr<task_t> task;
         {
             concurrency_task_queue::auto_ref ref = _task_queue.lock();
             task = ref->front();
             ref->pop();
+        }
+        if (task.get() == NULL) {
+            return;
         }
         (*task)();
     }
