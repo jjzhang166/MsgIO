@@ -10,9 +10,9 @@ int main(void) {
     cclog::reset(new cclog_debugoutput(cclog::TRACE));
     try
     {
-        //test_timer();
+        test_timer();
         //test_submit();
-        test_listen_conn();
+        //test_listen_conn();
     }
     catch (std::exception &e)
     {

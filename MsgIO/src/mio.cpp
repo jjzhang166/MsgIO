@@ -12,14 +12,14 @@ loop::~loop()
     delete IMPL;
 }
 
-void loop::start()
+void loop::start(int num)
 {
-    IMPL->start();
+    IMPL->start(num);
 }
 
-void loop::run()
+void loop::run(int num)
 {
-    IMPL->run();
+    IMPL->run(num);
 }
 
 mio::shared_handler loop::add_handler_impl( shared_handler sh )

@@ -16,5 +16,5 @@ void test_submit()
     l.submit(submit_callback);
     l.submit(submit_callback2, 3, 4);
     l.submit(&loop::end, &l);
-    l.run();
+    l.run(4);
 }

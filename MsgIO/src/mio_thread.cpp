@@ -1,4 +1,4 @@
-#include "mio_thread.h"
+#include "mio/thread.h"
 #include <iostream>
 
 namespace mio {
@@ -51,7 +51,7 @@ void thread::join()
 
 int thread::ident()
 {
-    return (int)_thread;
+    return reinterpret_cast<int>(_thread);
 }
 
 bool thread::isEqual( const thread& other )
@@ -89,5 +89,31 @@ bool thread_mutex::trylock()
 void thread_mutex::unlock()
 {
     LeaveCriticalSection(&_mutex);
+}
+
+thread_semaphore::thread_semaphore( int init /*= 0*/, int maximum /*= 65535*/ )
+{
+    _semaphore = CreateSemaphore(NULL, init, maximum, NULL);
+}
+
+
+thread_semaphore::~thread_semaphore()
+{
+    CloseHandle(_semaphore);
+}
+
+void thread_semaphore::wait( int timeout /*=-1*/)
+{
+    WaitForSingleObject(_semaphore, timeout);
+}
+
+void thread_semaphore::signal( int count /*= 1*/ )
+{
+    ReleaseSemaphore(_semaphore, count, NULL);
+}
+
+int thread_semaphore::ident()
+{
+    return reinterpret_cast<int>(_semaphore);
 }
 } //namespace mio

@@ -32,7 +32,7 @@ kernel_timer::~kernel_timer()
 
 int kernel_timer::timer_ident()
 {
-    return (int)_flag;
+    return reinterpret_cast<int>(_flag);
 }
 
 #pragma warning(push)

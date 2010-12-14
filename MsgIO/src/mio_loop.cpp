@@ -8,7 +8,7 @@ namespace mio {
 
 loop_impl::loop_impl() : 
             _is_running(false),
-            _start(CreateEvent(NULL, TRUE, FALSE, NULL)),
+            _start(CreateEvent(NULL, FALSE, FALSE, NULL)),
             _hwnd(0)
 {
     _thread.run(bind(&loop_impl::thread_main, this));
@@ -19,17 +19,39 @@ loop_impl::~loop_impl()
 {
 }
 
-void loop_impl::start()
+void loop_impl::start( int num )
 {
     if (!is_running()) {
+        _is_running = true;
         SetEvent(_start);
     }
+
+    add_thread(num);
 }
 
-void loop_impl::run()
+void loop_impl::run( int num )
 {
-    start();
+    start(num);
     join();
+}
+
+
+void loop_impl::add_thread( int num )
+{
+
+    worker_queue::auto_ref ref = _workers.lock();
+    for (int i = 0;i<num;++i) {
+        ref->push_back(shared_ptr<thread>(new thread()));
+
+        try
+        {
+            ref->back()->run(bind(&loop_impl::worker_main, this));
+        }
+        catch (...)
+        {
+            ref->pop_back();
+        }
+    }
 }
 
 bool loop_impl::is_running() const
@@ -40,6 +62,7 @@ bool loop_impl::is_running() const
 void loop_impl::end()
 {
     _is_running = false;
+    _sem.signal(_workers.unsafe_ref().size());
 }
 
 bool loop_impl::is_end() const
@@ -50,6 +73,9 @@ bool loop_impl::is_end() const
 void loop_impl::join()
 {
     _thread.join();
+    for (int i = 0;i<(int)_workers.unsafe_ref().size();++i) {
+        _workers.unsafe_ref()[i]->join();
+    }
 }
 
 void loop_impl::thread_main()
@@ -59,7 +85,6 @@ void loop_impl::thread_main()
 
     LOG_TRACE("Loop start");
     WaitForSingleObject(_start, INFINITE);
-    _is_running = true;
 
     while(true) {
         if (!_is_running) { break; }
@@ -82,17 +107,20 @@ void loop_impl::handle_message()
         case MESSAGE::TASK:
             {
                 std::auto_ptr<task_t> task(reinterpret_cast<task_t*>(msg.wParam));
-                (*task)();
+                this->submit_impl(task.get());
+                task.release();
             }
             break;
         case MESSAGE::IO_SOCKET:
             {
-                handle_io_socket(msg);
+                submit_impl(bind(&loop_impl::handle_io_socket, this, msg.wParam, msg.lParam));
+                //handle_io_socket(msg);
             }
             break;
         case MESSAGE::IO_TIMER:
             {
-                handle_io_timer(msg);
+                submit_impl(bind(&loop_impl::handle_io_timer, this, msg.wParam, msg.lParam));
+                //handle_io_timer(msg);
             }
             break;
         default:
@@ -102,11 +130,11 @@ void loop_impl::handle_message()
 }
 
 
-void loop_impl::handle_io_socket( const MSG& msg )
+void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
 {
-    int socket = msg.wParam;
-    int error = WSAGETSELECTERROR(msg.lParam);
-    int e = WSAGETSELECTEVENT(msg.lParam);
+    int socket = wParam;
+    int error = WSAGETSELECTERROR(lParam);
+    int e = WSAGETSELECTEVENT(lParam);
     if (e & EVENT::READ) {
         event ev;
         (*(*_handlers.lock())[socket])(ev);
@@ -115,9 +143,9 @@ void loop_impl::handle_io_socket( const MSG& msg )
 }
 
 
-void loop_impl::handle_io_timer( const MSG&msg )
+void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
 {
-    int ident = static_cast<int>(msg.wParam);
+    int ident = static_cast<int>(wParam);
     event ev;
     //if (!(*_handlers[ident])(ev)) {
     if (!(*(*_handlers.lock())[ident])(ev)) {
@@ -133,6 +161,7 @@ void loop_impl::set_handler( shared_handler sh )
         return;
     }
 
+    (*ref)[sh->ident()] = sh;
 }
 
 void loop_impl::reset_handler( int fd )
@@ -143,8 +172,15 @@ void loop_impl::reset_handler( int fd )
 void loop_impl::submit_impl( task_t f )
 {
     std::auto_ptr<task_t> task(new task_t(f));
-    PostMessage(_hwnd, MESSAGE::TASK, reinterpret_cast<WPARAM>(task.get()), NULL);
+    //PostMessage(_hwnd, MESSAGE::TASK, reinterpret_cast<WPARAM>(task.get()), NULL);
+    _task_queue.lock()->push(shared_ptr<task_t>(task.get()));
+    _sem.signal();
     task.release();
+}
+
+void loop_impl::submit_impl( task_t *f )
+{
+    _task_queue.lock()->push(shared_ptr<task_t>(f));
 }
 
 shared_handler loop_impl::add_handler_impl( shared_handler sh )
@@ -160,4 +196,21 @@ void loop_impl::remove_handler( int ident )
     WSAAsyncSelect(ident, _hwnd, NULL, NULL );
 }
 
+void loop_impl::worker_main()
+{
+    while(true){
+        _sem.wait();
+
+        if (!is_running())
+            return;
+
+        shared_ptr<task_t> task;
+        {
+            concurrency_task_queue::auto_ref ref = _task_queue.lock();
+            task = ref->front();
+            ref->pop();
+        }
+        (*task)();
+    }
+}
 } //namespace mio

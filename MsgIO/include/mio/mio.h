@@ -23,9 +23,9 @@ public:
     loop();
     ~loop();
 
-    void start();
+    void start(int num);
 
-    void run();   // run = start + join
+    void run(int num);   // run = start + join
 
     bool is_running() const;
 

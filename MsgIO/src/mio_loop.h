@@ -5,6 +5,7 @@
 #include "mio/sync.h"
 
 #include <memory>
+#include <queue>
 #include <hash_map>
 
 #define IMPL (static_cast<loop_impl*>(_impl))
@@ -37,9 +38,11 @@ public:
     loop_impl();
     ~loop_impl();
 
-    void start();
+    void start(int num);
 
-    void run();   // run = start + join
+    void run(int num);   // run = start + join
+
+    void add_thread(int num);
 
     bool is_running() const;
 
@@ -71,12 +74,14 @@ private:
     void reset_handler(int fd);
 
     void submit_impl(task_t f);
+    void submit_impl(task_t *f);
     shared_handler add_handler_impl(shared_handler sh);
 
     void thread_main();
+    void worker_main();
     void handle_message();
-    void handle_io_socket(const MSG& msg);
-    void handle_io_timer(const MSG&msg);
+    void handle_io_socket(WPARAM wParam, LPARAM lParam);
+    void handle_io_timer(WPARAM wParam, LPARAM lParam);
 
 private:
     HWND _hwnd;
@@ -88,6 +93,14 @@ private:
     typedef stdext::hash_map<int, shared_handler> map_container;
     typedef sync<map_container> concurrency_container;
     concurrency_container _handlers;
+
+    typedef std::queue<shared_ptr<task_t>> task_queue;
+    typedef sync<task_queue> concurrency_task_queue;
+    concurrency_task_queue _task_queue;
+    thread_semaphore _sem;
+
+    typedef sync<std::vector<shared_ptr<thread>>> worker_queue;
+    worker_queue _workers;
 
     friend class loop;
 };

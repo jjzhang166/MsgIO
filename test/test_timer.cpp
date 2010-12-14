@@ -17,6 +17,6 @@ bool timer_callback() {
 void test_timer() {
     l.reset(new loop());
     l->add_timer(1, 2, timer_callback);
-    l->run();
+    l->run(4);
     l.reset(NULL);
 }

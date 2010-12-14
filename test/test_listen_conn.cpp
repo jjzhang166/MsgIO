@@ -49,7 +49,7 @@ void test_listen_conn() {
         (struct sockaddr*)&addr, sizeof(addr),
         bind(&accepted, _1, _2));
 
-    lo.start();  // run with 4 threads
+    lo.start(4);  // run with 4 threads
 
     {
         addr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -58,7 +58,7 @@ void test_listen_conn() {
             0.0, connected);
     }
 
-    Sleep(5000);
+    Sleep(10000);
 
     lo.end();
     lo.join();

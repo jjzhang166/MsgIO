@@ -61,6 +61,26 @@ private:
     CRITICAL_SECTION _mutex;
 };
 
+class thread_semaphore 
+{
+private: //Disable copy and assignment
+	thread_semaphore(const thread_semaphore&);         
+	void operator=(const thread_semaphore&);
+
+public:
+    thread_semaphore(int init = 0, int maximum = 65535);
+
+    ~thread_semaphore();
+
+public:
+    void wait(int timeout = -1);
+    void signal(int count = 1);
+    int ident();
+
+private:
+    HANDLE _semaphore;
+};
+
 class thread_scoped_lock {
 public:
     thread_scoped_lock() : _mutex(NULL) { }
