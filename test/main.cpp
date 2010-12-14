@@ -1,5 +1,6 @@
 #include "test.h"
 #include <cclog/cclog_debugoutput.h>
+#include <cclog/cclog_ostream.h>
 #include <iostream>
 
 using namespace std;
@@ -7,7 +8,8 @@ using namespace std;
 int main(void) {
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2,2), &wsaData);
-    cclog::reset(new cclog_debugoutput(cclog::TRACE));
+    //cclog::reset(new cclog_debugoutput(cclog::TRACE));
+    cclog::reset(new cclog_ostream(cclog::TRACE, cout));
     try
     {
         test_timer();

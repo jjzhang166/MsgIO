@@ -8,7 +8,7 @@ void accepted(int fd, int err)
     }
 
     try {
-        std::cout << "accepted" << std::endl;
+        LOG_DEBUG("accepted");
 
         // do something with fd
         closesocket(fd);
@@ -27,7 +27,7 @@ void connected(int fd, int err)
     }
 
     try {
-        std::cout << "connected" << std::endl;
+        LOG_DEBUG("connected");
 
         // do something with fd
 

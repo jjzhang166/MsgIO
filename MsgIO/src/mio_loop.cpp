@@ -8,11 +8,10 @@ namespace mio {
 
 loop_impl::loop_impl() : 
             _is_running(false),
-            _start(CreateEvent(NULL, FALSE, FALSE, NULL)),
             _hwnd(0)
 {
     _thread.run(bind(&loop_impl::thread_main, this));
-    WaitForSingleObject(_start, INFINITE);
+    while(_hwnd == 0); //FIXME TODO(wsxiaoys)
 }
 
 loop_impl::~loop_impl()
@@ -23,7 +22,6 @@ void loop_impl::start( int num )
 {
     if (!is_running()) {
         _is_running = true;
-        SetEvent(_start);
     }
 
     add_thread(num);
@@ -84,10 +82,6 @@ void loop_impl::join()
 void loop_impl::thread_main()
 {
     _hwnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
-    SetEvent(_start);
-
-    LOG_TRACE("Loop start");
-    WaitForSingleObject(_start, INFINITE);
 
     while(true) {
         /*if (!_is_running) { break; }*/
@@ -102,7 +96,7 @@ void loop_impl::thread_main()
 
     LOG_TRACE("Loop ended");
     ::DestroyWindow(_hwnd);
-    _hwnd = NULL;
+    _hwnd = 0;
 }
 
 bool loop_impl::handle_message()
