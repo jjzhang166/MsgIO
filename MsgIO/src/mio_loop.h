@@ -8,6 +8,8 @@
 #include <queue>
 #include <hash_map>
 
+#include "mio_out.h"
+
 #define IMPL (static_cast<loop_impl*>(_impl))
 namespace mio {
 namespace MESSAGE {
@@ -69,6 +71,8 @@ public:
         listen_callback_t callback,
         int backlog = 1024);
 
+    bool isRead(int fd);
+
 private:
     void set_handler(shared_handler sh);
     void reset_handler(int fd);
@@ -85,7 +89,8 @@ private:
 
 private:
     HWND _hwnd;
-    
+    std::auto_ptr<out> _out;
+
     thread _thread;
     bool _is_running;
 
@@ -102,5 +107,6 @@ private:
     cocurrency_worker_queue _workers;
 
     friend class loop;
+    friend class out;
 };
 } //namespace mio

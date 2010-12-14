@@ -12,6 +12,7 @@ loop_impl::loop_impl() :
 {
     _thread.run(bind(&loop_impl::thread_main, this));
     while(_hwnd == 0); //FIXME TODO(wsxiaoys)
+    _out.reset(new out(this));
 }
 
 loop_impl::~loop_impl()
@@ -136,6 +137,10 @@ void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
         event ev;
         (*(*_handlers.lock())[socket])(ev);
     }
+
+    if (e & EVENT::WRITE) {
+        _out->on_write(socket);
+    }
 }
 
 
@@ -207,6 +212,12 @@ void loop_impl::worker_main()
         }
         (*task)();
     }
+}
+
+bool loop_impl::isRead( int fd )
+{
+    concurrency_container::auto_ref ref(_handlers);
+    return ref->find(fd) != ref->end();
 }
 
 loop::loop()
