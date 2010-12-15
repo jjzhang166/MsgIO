@@ -293,7 +293,7 @@ void xfer::clear()
 }
 
 namespace {
-    typedef unordered_map<int, shared_ptr<xfer>> xfer_map_t;
+    typedef hash_map<int, shared_ptr<xfer>> xfer_map_t;
     inline shared_ptr<xfer_impl> get_xfer(sync<xfer_map_t>& _xfers, int fd) {
         sync<xfer_map_t>::ref ref(_xfers);
         if (ref->find(fd) == ref->end()) {

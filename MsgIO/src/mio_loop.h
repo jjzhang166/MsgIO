@@ -94,7 +94,7 @@ private:
     thread _thread;
     bool _is_running;
 
-    typedef unordered_map<int, shared_handler> map_container;
+    typedef hash_map<int, shared_handler> map_container;
     typedef sync<map_container> concurrency_container;
     concurrency_container _handlers;
 

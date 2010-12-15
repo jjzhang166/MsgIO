@@ -121,4 +121,143 @@ private:
     thread_scoped_lock(const thread_scoped_lock&);
 };
 
+class thread_cond
+{
+private: //Disable copy and assignment
+    thread_cond(const thread_cond&);         
+    void operator=(const thread_cond&);
+
+public:
+    thread_cond()
+    {
+        _semaphore = ::CreateSemaphore(NULL, 0, LONG_MAX, NULL);
+        if (_semaphore == NULL)
+            throw thread_error(GetLastError(), "error!");
+
+        _num_waiting = 0;
+        _num_wake = 0;
+        _generation = 0;
+
+        ::InitializeCriticalSection(&_csection);
+    }
+
+    ~thread_cond()
+    {
+        ::CloseHandle(_semaphore);
+        ::DeleteCriticalSection(&_csection);
+    }
+
+    bool wait(thread_mutex& lock)
+    {
+        return do_wait(lock, INFINITE);
+    }
+
+//     bool timedwait(thread_mutex& lock, const struct timespec *abstime)
+//     {
+//         int milliseconds = timespec_to_ms(abstime);
+//         return do_wait(lock, milliseconds);
+//     }
+
+    bool signal()
+    {
+        unsigned int wake = 0;
+
+        ::EnterCriticalSection(&_csection);
+        if (_num_waiting > _num_wake)
+        {
+            wake = 1;
+            _num_wake++;
+            _generation++;
+        }
+        ::LeaveCriticalSection(&_csection);
+
+        if (wake)
+            ::ReleaseSemaphore(_semaphore, 1, NULL);
+
+        return true;
+    }
+
+    bool broadcast()
+    {
+        unsigned long num_wake = 0;
+
+        ::EnterCriticalSection(&_csection);
+        if (_num_waiting > _num_wake)
+        {
+            num_wake = _num_waiting - _num_wake;
+            _num_wake = _num_waiting;
+            _generation++;
+        }
+        ::LeaveCriticalSection(&_csection);
+
+        if (num_wake)
+            ::ReleaseSemaphore(_semaphore, num_wake, NULL);
+
+        return true;
+    }
+
+private:
+    bool do_wait(thread_mutex& lock, unsigned milliseconds)
+    {
+        unsigned long res;
+        bool ret;
+        unsigned int wake = 0;
+        unsigned long generation;
+
+        ::EnterCriticalSection(&_csection);
+        _num_waiting++;
+        generation = _generation;
+        ::LeaveCriticalSection(&_csection);
+
+        lock.unlock();
+
+        do
+        {
+            res = ::WaitForSingleObject(_semaphore, milliseconds);
+            ::EnterCriticalSection(&_csection);
+
+            if (_num_wake)
+            {
+                if (_generation != generation)
+                {
+                    _num_wake--;
+                    _num_waiting--;
+                    ret = true;
+                    break;
+                }
+                else
+                {
+                    wake = 1;
+                }
+            }
+            else if (res != WAIT_OBJECT_0)
+            {
+                _num_waiting--;
+                ret = false;
+                break;
+            }
+
+            ::LeaveCriticalSection(&_csection);
+
+            if (wake)
+            {
+                wake = 0;
+                ::ReleaseSemaphore(_semaphore, 1, NULL);
+            }
+        } while (true);
+
+        ::LeaveCriticalSection(&_csection);
+        lock.lock();
+
+        return ret;
+    }
+
+
+    HANDLE                _semaphore;
+    CRITICAL_SECTION       _csection;
+    unsigned long        _num_waiting;
+    unsigned long        _num_wake;
+    unsigned long        _generation;
+};
+
 } //namespace mio
