@@ -8,6 +8,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", 
 		{31209218-FB9F-4D97-A403-74A5F876CB1C} = {31209218-FB9F-4D97-A403-74A5F876CB1C}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msgpack-rpc", "msgpack-rpc\cpp\src\msgpack-rpc.vcproj", "{D0441B3E-DDAD-4B27-87F5-067B7D881541}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -22,6 +24,10 @@ Global
 		{8C8FEBCA-7629-46E6-BADC-4769CD8DA050}.Debug|Win32.Build.0 = Debug|Win32
 		{8C8FEBCA-7629-46E6-BADC-4769CD8DA050}.Release|Win32.ActiveCfg = Release|Win32
 		{8C8FEBCA-7629-46E6-BADC-4769CD8DA050}.Release|Win32.Build.0 = Release|Win32
+		{D0441B3E-DDAD-4B27-87F5-067B7D881541}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D0441B3E-DDAD-4B27-87F5-067B7D881541}.Debug|Win32.Build.0 = Debug|Win32
+		{D0441B3E-DDAD-4B27-87F5-067B7D881541}.Release|Win32.ActiveCfg = Release|Win32
+		{D0441B3E-DDAD-4B27-87F5-067B7D881541}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

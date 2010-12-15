@@ -3,10 +3,10 @@
 #include "mio/mio.h"
 #include "mio/thread.h"
 #include "mio/sync.h"
+#include "mio/unordered_map.h"
 
 #include <memory>
 #include <queue>
-#include <hash_map>
 
 #include "mio_out.h"
 
@@ -94,7 +94,7 @@ private:
     thread _thread;
     bool _is_running;
 
-    typedef stdext::hash_map<int, shared_handler> map_container;
+    typedef unordered_map<int, shared_handler> map_container;
     typedef sync<map_container> concurrency_container;
     concurrency_container _handlers;
 

@@ -245,6 +245,18 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\mio\unordered.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unordered_map.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unordered_set.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\mio\unwindows.h"
 				>
 			</File>
