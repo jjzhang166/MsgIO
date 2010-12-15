@@ -142,11 +142,9 @@ default: {  // XF_IOVCE
     iovec* vec = (iovec*)(p + sizeof(xfer_type));
 
     //ssize_t wl = ::writev(fd, vec, veclen);
-    int wl = 0;
-    if (WSASend(fd, reinterpret_cast<WSABUF*>(vec), veclen, reinterpret_cast<DWORD*>(&wl), NULL, NULL, NULL) != NOERROR) {
-        throw system_error(WSAGetLastError(), "send failed");
-    }
-    if(wl <= 0) {
+    size_t wl;
+    int ret = WSASend(fd, reinterpret_cast<WSABUF*>(vec), veclen, reinterpret_cast<DWORD*>(&wl), NULL, NULL, NULL);
+    if(ret == SOCKET_ERROR) {
         MP_WAVY_XFER_CONSUMED;
         int err = WSAGetLastError();
         if(wl < 0 && (err == WSAEWOULDBLOCK || err == WSAEINTR)) {
@@ -335,7 +333,7 @@ void out::write( int fd, const void* buf, size_t size )
     thread_scoped_lock lock(xfer->mutex());
     if (xfer->empty()) {
         int wl = ::send(fd, (char*)buf, size, 0);
-        if(wl <= 0) {
+        if(wl == SOCKET_ERROR) {
             int err = WSAGetLastError();
              if(wl == 0 || ( err != WSAEINTR && err != WSAEWOULDBLOCK)) {
                  ::shutdown(fd, SD_BOTH);

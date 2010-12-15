@@ -12,7 +12,9 @@
 //some type defines
 typedef unsigned __int64 uint64_t;
 
+#ifndef MSGPACK_VREFBUFFER_H__
 struct iovec { //WSABUF capitable
     size_t iov_len;
     void *iov_base;
 };
+#endif
