@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../MsgIO/include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MIO_FUNCTIONAL_BOOST_ORG;MP_MEMORY_BOOST_ORG"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;MIO_FUNCTIONAL_BOOST_ORG;MIO_MEMORY_BOOST_ORG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
