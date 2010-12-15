@@ -225,7 +225,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\include\object_delete.h"
+				RelativePath=".\include\mio\object_delete.h"
 				>
 			</File>
 			<File
