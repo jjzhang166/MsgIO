@@ -7,6 +7,7 @@
 #include <ws2tcpip.h>
 #undef max
 #undef min
+#undef ERROR
 
 //some type defines
 typedef unsigned __int64 uint64_t;

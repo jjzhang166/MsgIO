@@ -27,6 +27,10 @@ public:
     void start(int num);
 
     void run(int num);   // run = start + join
+    
+    void run_once();
+    
+    void run_nonblock();
 
     bool is_running() const;
 
@@ -290,5 +294,51 @@ inline xfer::~xfer()
 inline bool xfer::empty() const
 {
 	return m_head == m_tail;
+}
+
+template <typename T>
+inline void xfer::push_finalize(std::auto_ptr<T> fin)
+{
+	push_finalize(&mio::object_delete<T>, reinterpret_cast<void*>(fin.get()));
+	fin.release();
+}
+
+template <typename T>
+inline void xfer::push_finalize(mio::shared_ptr<T> fin)
+{
+	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+	push_finalize(afin);
+}
+
+template <typename T>
+inline void loop::write(int fd, const void* buf, size_t size,
+		std::auto_ptr<T>& fin)
+{
+	write(fd, buf, size, &mio::object_delete<T>, fin.get());
+	fin.release();
+}
+
+template <typename T>
+inline void loop::write(int fd, const void* buf, size_t size,
+		mio::shared_ptr<T> fin)
+{
+	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+	write(fd, buf, size, afin);
+}
+
+template <typename T>
+inline void loop::writev(int fd, const struct iovec* vec, size_t veclen,
+		std::auto_ptr<T>& fin)
+{
+	writev(fd, vec, veclen, &mio::object_delete<T>, fin.get());
+	fin.release();
+}
+
+template <typename T>
+inline void loop::writev(int fd, const struct iovec* vec, size_t veclen,
+		mio::shared_ptr<T> fin)
+{
+	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+	writev(fd, vec, veclen, afin);
 }
 } // namespace mio

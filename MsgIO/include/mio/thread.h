@@ -69,7 +69,7 @@ public:
     ~thread_semaphore();
 
 public:
-    void wait(int timeout = -1);
+    bool wait(int timeout = -1);
     void signal(int count = 1);
     int ident();
 

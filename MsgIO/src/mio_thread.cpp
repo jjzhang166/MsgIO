@@ -104,9 +104,9 @@ thread_semaphore::~thread_semaphore()
     CloseHandle(_semaphore);
 }
 
-void thread_semaphore::wait( int timeout /*=-1*/)
+bool thread_semaphore::wait( int timeout /*=-1*/)
 {
-    WaitForSingleObject(_semaphore, timeout);
+    return WaitForSingleObject(_semaphore, timeout) != WAIT_TIMEOUT;
 }
 
 void thread_semaphore::signal( int count /*= 1*/ )

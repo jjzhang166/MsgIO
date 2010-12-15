@@ -27,6 +27,7 @@ namespace mio {
     using stdext::hash_multimap;
     using stdext::hash_multiset;
     using stdext::hash_value;
+    using stdext::hash_compare;
 }
 
 #endif /* mp/unordered.h */

@@ -44,6 +44,8 @@ public:
 
     void run(int num);   // run = start + join
 
+    void run_once(bool block);
+
     void add_thread(int num);
 
     bool is_running() const;

@@ -220,6 +220,28 @@ bool loop_impl::isRead( int fd )
     return ref->find(fd) != ref->end();
 }
 
+void loop_impl::run_once(bool block)
+{
+    
+    if (block)
+        _sem.wait();
+    else {
+        if (!_sem.wait(0)) {
+            return;
+        }
+    }
+    shared_ptr<task_t> task;
+    {
+        concurrency_task_queue::ref ref(_task_queue);
+        task = ref->front();
+        ref->pop();
+    }
+    if (task.get() == NULL) {
+        return;
+    }
+    (*task)();
+}
+
 loop::loop()
 {
     _impl = new loop_impl();
@@ -238,6 +260,18 @@ void loop::start(int num)
 void loop::run(int num)
 {
     IMPL->run(num);
+}
+
+void loop::run_once() {
+    IMPL->run_once(true);
+}
+
+void loop::run_nonblock() {
+    IMPL->run_once(false);
+}
+
+bool loop::is_running() const {
+    return IMPL->is_running();
 }
 
 mio::shared_handler loop::add_handler_impl( shared_handler sh )

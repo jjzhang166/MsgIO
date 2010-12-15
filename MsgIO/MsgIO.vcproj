@@ -225,6 +225,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\include\object_delete.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\mio\sync.h"
 				>
 			</File>
@@ -258,6 +262,10 @@
 			</File>
 			<File
 				RelativePath=".\include\mio\unwindows.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\utilize.h"
 				>
 			</File>
 		</Filter>
