@@ -220,14 +220,14 @@ bool loop_impl::isRead( int fd )
     return ref->find(fd) != ref->end();
 }
 
-void loop_impl::run_once(bool block)
+bool loop_impl::run_once( bool block )
 {
     
     if (block)
         _sem.wait();
     else {
         if (!_sem.wait(0)) {
-            return;
+            return false;
         }
     }
     shared_ptr<task_t> task;
@@ -237,9 +237,15 @@ void loop_impl::run_once(bool block)
         ref->pop();
     }
     if (task.get() == NULL) {
-        return;
+        throw system_error(-1, "you do run after ended!");
     }
     (*task)();
+    return true;
+}
+
+void loop_impl::flush()
+{
+    while(run_once(false));
 }
 
 loop::loop()
@@ -297,6 +303,11 @@ void loop::end()
 bool loop::is_end() const
 {
     return IMPL->is_end();
+}
+
+void loop::flush()
+{
+    IMPL->flush();
 }
 
 void loop::join()

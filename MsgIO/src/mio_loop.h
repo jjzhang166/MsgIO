@@ -44,7 +44,7 @@ public:
 
     void run(int num);   // run = start + join
 
-    void run_once(bool block);
+    bool run_once(bool block);
 
     void add_thread(int num);
 
@@ -54,6 +54,8 @@ public:
     bool is_end() const;
 
     void join();
+
+    void flush();
 
     void remove_handler(int ident);
 
