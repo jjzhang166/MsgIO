@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_sync.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\test_timer.cpp"
 				>
 			</File>

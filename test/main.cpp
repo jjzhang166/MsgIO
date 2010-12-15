@@ -15,6 +15,7 @@ int main(void) {
         test_timer();
         test_submit();
         test_listen_conn();
+        test_sync();
     }
     catch (std::exception &e)
     {

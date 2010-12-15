@@ -19,13 +19,15 @@ DWORD WINAPI thread::trampoline( void* user )
     return 0;
 }
 
-thread::thread()
+thread::thread() : _thread(0)
 {
 
 }
 
 thread::~thread()
 {
+    if (!_thread)
+        return;
     BOOL ret = CloseHandle(_thread);
     if(!ret) { throw thread_error(GetLastError(), "failed to detach thread"); }
 }

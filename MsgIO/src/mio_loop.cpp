@@ -40,7 +40,7 @@ void loop_impl::run( int num )
 void loop_impl::add_thread( int num )
 {
 
-    cocurrency_worker_queue::auto_ref ref = _workers.lock();
+    cocurrency_worker_queue::ref ref(_workers);
     for (int i = 0;i<num;++i) {
         ref->push_back(shared_ptr<thread>(new thread()));
 
@@ -155,7 +155,7 @@ void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
 
 void loop_impl::set_handler( shared_handler sh )
 {
-    concurrency_container::auto_ref ref = _handlers.lock();
+    concurrency_container::ref ref(_handlers);
     if (ref->find(sh->ident()) != ref->end()) {
         throw std::logic_error("HANDLE ALREADY exist!");
         return;
@@ -203,7 +203,7 @@ void loop_impl::worker_main()
 
         shared_ptr<task_t> task;
         {
-            concurrency_task_queue::auto_ref ref = _task_queue.lock();
+            concurrency_task_queue::ref ref(_task_queue);
             task = ref->front();
             ref->pop();
         }

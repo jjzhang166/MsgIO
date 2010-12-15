@@ -6,3 +6,4 @@
 void test_timer();
 void test_submit();
 void test_listen_conn();
+void test_sync();

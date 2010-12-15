@@ -11,10 +11,6 @@ public:
 };
 
 class thread {
-private: //Disable copy and assignment
-	thread(const thread&);         
-	void operator=(const thread&);
-
 public:
     typedef function<void()> function_t;
 
