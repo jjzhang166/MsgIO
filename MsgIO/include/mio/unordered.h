@@ -62,6 +62,7 @@ namespace mio {
     using stdext::hash_set;
     using stdext::hash_multimap;
     using stdext::hash_multiset;
+    using stdext::hash_value;
 }
 #define unordered_map mio::hash_map
 #define unordered_set mio::hash_map
