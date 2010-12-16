@@ -29,5 +29,12 @@ int
                                IN long lEvent
                                );
 #define HWND_MESSAGE NULL
-static LPFN_WSAASYNCSELECT WSAAsyncSelect = NULL;
+extern LPFN_WSAASYNCSELECT WSAAsyncSelect;
 #endif
+
+#define MESSAGE_CLASS TEXT("Message")
+
+//init method
+namespace mio {
+    void init();
+}

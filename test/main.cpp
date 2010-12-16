@@ -5,11 +5,19 @@
 
 using namespace std;
 
+#ifdef UNDER_CE
+#include <cclog/cclog_serial.h>
+int _tmain() {
+#else
 int main(void) {
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2,2), &wsaData);
-    //cclog::reset(new cclog_debugoutput(cclog::TRACE));
+#endif
+    mio::init();
+#ifdef UNDER_CE
+    cclog::reset(new cclog_serial(cclog::TRACE));
+#else
     cclog::reset(new cclog_ostream(cclog::TRACE, cout));
+#endif
+    //cclog::reset(new cclog_debugoutput(cclog::TRACE));
     try
     {
         test_timer();
@@ -21,6 +29,5 @@ int main(void) {
     {
         cout << e.what() << endl;
     }
-    WSACleanup();
     return 0;
 }

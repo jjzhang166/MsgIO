@@ -2,24 +2,24 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="MsgIO"
-	ProjectGUID="{31209218-FB9F-4D97-A403-74A5F876CB1C}"
-	RootNamespace="MsgIO"
+	Name="MsgIO_ce"
+	ProjectGUID="{C7C5DC20-6098-4577-91FD-FCF812117B09}"
+	RootNamespace="MsgIO_ce"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
-			Name="Win32"
+			Name="Game Engine SDK v1.1 (ARMV4I)"
 		/>
 	</Platforms>
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Debug|Game Engine SDK v1.1 (ARMV4I)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
 			>
@@ -40,28 +40,33 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
 				Optimization="0"
 				AdditionalIncludeDirectories="include/"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;MIO_FUNCTIONAL_BOOST_ORG;MIO_MEMORY_BOOST_ORG"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;DEBUG;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;MIO_FUNCTIONAL_BOOST_ORG;MIO_MEMORY_BOOST_ORG;BOOST_USE_WINDOWS_H"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
+				EnableFloatingPointEmulation="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="ws2_32.lib"
+				AdditionalOptions=" /subsystem:windowsce,6.00"
+				AdditionalDependencies="ws2.lib"
 				OutputFile="lib\$(ProjectName).lib"
 			/>
 			<Tool
@@ -77,16 +82,26 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			Name="Release|Game Engine SDK v1.1 (ARMV4I)"
+			OutputDirectory="$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="4"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -105,12 +120,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				ExecutionBucket="7"
 				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="include/"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
+				FavorSizeOrSpeed="2"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;WINCE;_LIB;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="3"
@@ -120,12 +134,17 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE"
+				Culture="2052"
+				AdditionalIncludeDirectories="$(IntDir)"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalOptions=" /subsystem:windowsce,6.00"
+				OutputFile="$(OutDir)/MsgIO_ce.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -140,7 +159,18 @@
 				Name="VCFxCopTool"
 			/>
 			<Tool
+				Name="VCCodeSignTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
+			/>
+			<DeploymentTool
+				ForceDirty="-1"
+				RemoteDirectory=""
+				RegisterOutput="0"
+				AdditionalFiles=""
+			/>
+			<DebuggerTool
 			/>
 		</Configuration>
 	</Configurations>
@@ -148,9 +178,123 @@
 	</References>
 	<Files>
 		<Filter
+			Name="cclog"
+			>
+			<File
+				RelativePath=".\include\cclog\cclog.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_debugoutput.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_debugoutput.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_null.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_null.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_ostream.cc"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_ostream.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\cclog\cclog_serial.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="mio"
+			>
+			<File
+				RelativePath=".\include\mio\exception.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\functional.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\memory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\mio.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\mio.hmpl"
+				>
+				<FileConfiguration
+					Name="Debug|Game Engine SDK v1.1 (ARMV4I)"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\include\mio\object_delete.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\sync.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\sync.hmpl"
+				>
+				<FileConfiguration
+					Name="Debug|Game Engine SDK v1.1 (ARMV4I)"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\include\mio\thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unordered.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unordered_map.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unordered_set.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\unwindows.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\mio\utilize.h"
+				>
+			</File>
+		</Filter>
+		<Filter
 			Name="src"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
 				RelativePath=".\src\mio_thread.cpp"
@@ -208,124 +352,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="mio"
-			>
-			<File
-				RelativePath=".\include\mio\exception.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\functional.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\memory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\mio.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\mio.hmpl"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\include\mio\object_delete.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\sync.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\sync.hmpl"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\include\mio\thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\unordered.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\unordered_map.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\unordered_set.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\unwindows.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\mio\utilize.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="资源文件"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-		</Filter>
-		<Filter
-			Name="cclog"
-			>
-			<File
-				RelativePath=".\include\cclog\cclog.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_debugoutput.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_debugoutput.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_null.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_null.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_ostream.cc"
-				>
-			</File>
-			<File
-				RelativePath=".\include\cclog\cclog_ostream.h"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

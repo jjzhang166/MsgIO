@@ -16,7 +16,7 @@ namespace  {
 
 kernel::kernel()
 {
-    _wnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
+    _wnd = CreateWindowEx(0, MESSAGE_CLASS, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
 }
 
 kernel::~kernel()

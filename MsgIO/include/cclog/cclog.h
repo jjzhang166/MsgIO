@@ -92,7 +92,7 @@ public:
             char tmbuf[21]; \
 			SYSTEMTIME buf; \
             ::GetLocalTime(&buf); \
-            s.write(tmbuf, (sprintf(tmbuf, "%4d-%2d-%2d %2d:%2d:%2d", buf.wYear, buf.wMonth, buf.wDay, buf.wHour, buf.wMinute, buf.wSecond))); \
+            s.write(tmbuf, (sprintf(tmbuf, "%4d-%02d-%02d %02d:%02d:%02d", buf.wYear, buf.wMonth, buf.wDay, buf.wHour, buf.wMinute, buf.wSecond))); \
 		} while(0)
 #endif
 
