@@ -161,7 +161,7 @@ void loop_impl::worker_main()
             task = ref->front();
             ref->pop();
         }
-        if (task.get() == NULL) {
+        if (task->empty()) {
             return;
         }
         try
@@ -198,7 +198,7 @@ bool loop_impl::run_once( bool block )
         task = ref->front();
         ref->pop();
     }
-    if (task.get() == NULL) {
+    if (task->empty()) {
         throw system_error(-1, "you do run after ended!");
     }
     try
