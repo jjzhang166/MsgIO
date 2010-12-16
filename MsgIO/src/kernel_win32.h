@@ -4,14 +4,6 @@
 #include <vector>
 
 namespace mio {
-namespace MESSAGE {
-    enum MSG {
-        IO_SOCKET = WM_USER + 10,
-        IO_TIMER,
-        EXIT
-    };
-}
-
 static const short EVKERNEL_READ = FD_ACCEPT | FD_READ;
 static const short EVKERNEL_WRITE = FD_WRITE;
 

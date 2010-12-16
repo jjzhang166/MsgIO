@@ -373,11 +373,7 @@ void out::commit_raw( int fd, char* xfbuf, char* xfendp )
 void out::watch( int fd )
 {
     InterlockedIncrement(&_watching);
-    int e = EVKERNEL_WRITE;
-    if (_loop->isRead(fd)) {
-        e |= EVKERNEL_READ;
-    }
-    _loop->_kernel->add_fd(fd, e);
+    _loop->_kernel->add_fd(fd, EVKERNEL_READ | EVKERNEL_WRITE);
 }
 
 void out::on_write( kernel::event &e )
@@ -397,12 +393,6 @@ void out::on_write( kernel::event &e )
     if(!cont) {
         ctx->clear();
         InterlockedDecrement(&_watching);
-
-        int e = 0;
-        if (_loop->isRead(ident)) {
-            e |= EVKERNEL_READ;
-        }
-        _loop->_kernel->add_fd(ident, e);
     }
 }
 

@@ -112,58 +112,6 @@ void loop_impl::on_event( kernel::event e )
         _out->on_write(e);
     }
 }
-// bool loop_impl::handle_message()
-// {
-//     MSG msg;
-//     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-//         switch (msg.message) {
-//         case MESSAGE::IO_SOCKET:
-//             {
-//                 submit_impl(bind(&loop_impl::handle_io_socket, this, msg.wParam, msg.lParam));
-//             }
-//             break;
-//         case MESSAGE::IO_TIMER:
-//             {
-//                 submit_impl(bind(&loop_impl::handle_io_timer, this, msg.wParam, msg.lParam));
-//             }
-//             break;
-//         case MESSAGE::EXIT:
-//             {
-//                 return true;
-//             }
-//             break;
-//         default:
-//             break;
-//         }
-//     }
-//     return false;
-// }
-// 
-// 
-// void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
-// {
-//     int socket = wParam;
-//     int error = WSAGETSELECTERROR(lParam);
-//     int e = WSAGETSELECTEVENT(lParam);
-//     if (e & EVKERNEL_READ) {
-//         event ev;
-//         (*(*_handlers.lock())[socket])(ev);
-//     }
-// 
-//     if (e & EVKERNEL_WRITE) {
-//         _out->on_write(socket);
-//     }
-// }
-// 
-// 
-// void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
-// {
-//     int ident = static_cast<int>(wParam);
-//     event ev;
-//     if (!(*(*_handlers.lock())[ident])(ev)) {
-//         reset_handler(ident);
-//     }
-// }
 
 void loop_impl::set_handler( shared_handler sh )
 {
@@ -187,12 +135,6 @@ void loop_impl::submit_impl( task_t f )
     _task_queue.lock()->push(shared_ptr<task_t>(task.get()));
     _sem.signal();
     task.release();
-}
-
-void loop_impl::submit_impl( task_t *f )
-{
-    _task_queue.lock()->push(shared_ptr<task_t>(f));
-    _sem.signal();
 }
 
 shared_handler loop_impl::add_handler_impl( shared_handler sh )
@@ -222,7 +164,14 @@ void loop_impl::worker_main()
         if (task.get() == NULL) {
             return;
         }
-        (*task)();
+        try
+        {
+            (*task)();
+        }
+        catch (std::exception &e)
+        {
+        	LOG_ERROR(e.what());
+        }
     }
 }
 
@@ -252,7 +201,14 @@ bool loop_impl::run_once( bool block )
     if (task.get() == NULL) {
         throw system_error(-1, "you do run after ended!");
     }
-    (*task)();
+    try
+    {
+        (*task)();
+    }
+    catch (std::exception &e)
+    {
+        LOG_ERROR(e.what());
+    }
     return true;
 }
 

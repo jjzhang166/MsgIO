@@ -1,6 +1,13 @@
 #include "kernel_win32.h"
 
 namespace mio {
+namespace MESSAGE {
+    enum MSG {
+        IO_SOCKET = WM_USER + 10,
+        IO_TIMER,
+        EXIT
+    };
+}
 namespace  {
     inline uint64_t make_u64(int hi, int lo) {
         return ((uint64_t)lo) | ((uint64_t)hi << 32);

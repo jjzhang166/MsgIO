@@ -69,15 +69,11 @@ private:
     void reset_handler(int fd);
 
     void submit_impl(task_t f);
-    void submit_impl(task_t *f);
     shared_handler add_handler_impl(shared_handler sh);
 
     void thread_main();
     void worker_main();
     void on_event(kernel::event e);
-//     bool handle_message(); // return true means get Exit message
-//     void handle_io_socket(WPARAM wParam, LPARAM lParam);
-//     void handle_io_timer(WPARAM wParam, LPARAM lParam);
 
 private:
     std::auto_ptr<kernel> _kernel;
