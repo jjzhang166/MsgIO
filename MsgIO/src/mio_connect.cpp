@@ -56,19 +56,23 @@ public:
             goto error;
         }
 
-        connect(fd, m->addr, m->addrlen);
+        while (true) {
+            if (connect(fd, m->addr, m->addrlen) >= 0) {
+                goto result;
+            }
 
-        if(WSAGetLastError() != WSAEWOULDBLOCK) {
-			goto error;
-		}
+            if(WSAGetLastError() != WSAEWOULDBLOCK) {
+			    goto error;
+		    }
 
-        DWORD ret = WSAWaitForMultipleEvents(1, &hEvent, FALSE,m->timeout_msec, FALSE);
-		if(ret == WSA_WAIT_EVENT_0) {
-            goto result;
-        }
+            DWORD ret = WSAWaitForMultipleEvents(1, &hEvent, FALSE,m->timeout_msec, FALSE);
+		    if(ret == WSA_WAIT_EVENT_0) {
+                goto result;
+            }
 
-        if(ret == WSA_WAIT_TIMEOUT) {
-            goto error;
+            if(ret == WSA_WAIT_TIMEOUT) {
+                goto error;
+            }
         }
 
 	error:

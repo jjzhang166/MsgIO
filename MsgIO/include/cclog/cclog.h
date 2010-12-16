@@ -72,6 +72,7 @@ public:
 //			struct tm t; localtime_r(&ti, &t); \
 //			s.write(tmbuf, strftime(tmbuf, sizeof(tmbuf), "%Y-%m-%d %H:%M:%S ", &t)); \
 //		} while(0)
+#ifndef UNDER_CE
 #define CCLOG_IMPL_BEGIN \
 	try { \
 		if(lv < m_runtime_level) { return; } \
@@ -82,6 +83,18 @@ public:
 			struct tm t; localtime_s(&t, &ti); \
 			s.write(tmbuf, strftime(tmbuf, sizeof(tmbuf), "%Y-%m-%d %H:%M:%S ", &t)); \
 		} while(0)
+#else
+#define CCLOG_IMPL_BEGIN \
+	try { \
+		if(lv < m_runtime_level) { return; } \
+		std::stringstream s; \
+		do { \
+            char tmbuf[21]; \
+			SYSTEMTIME buf; \
+            ::GetLocalTime(&buf); \
+            s.write(tmbuf, (sprintf(tmbuf, "%4d-%2d-%2d %2d:%2d:%2d", buf.wYear, buf.wMonth, buf.wDay, buf.wHour, buf.wMinute, buf.wSecond))); \
+		} while(0)
+#endif
 
 #define CCLOG_IMPL_END \
 		std::string str(s.str()); \

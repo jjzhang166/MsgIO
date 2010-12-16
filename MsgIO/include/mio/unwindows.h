@@ -18,3 +18,16 @@ struct iovec { //WSABUF capitable
     void *iov_base;
 };
 #endif
+
+#ifdef UNDER_CE
+typedef
+int
+(WSAAPI * LPFN_WSAASYNCSELECT)(
+                               IN SOCKET s,
+                               IN HWND hWnd,
+                               IN u_int wMsg,
+                               IN long lEvent
+                               );
+#define HWND_MESSAGE NULL
+static LPFN_WSAASYNCSELECT WSAAsyncSelect = NULL;
+#endif

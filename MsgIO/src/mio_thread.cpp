@@ -68,9 +68,13 @@ void thread::exit( void *retVal )
 
 thread_mutex::thread_mutex()
 {
+#ifndef UNDER_CE
     BOOL ret = InitializeCriticalSectionAndSpinCount(&_mutex, 4000);
     if (!ret)
         throw thread_error(GetLastError(), "cannot create mutex");
+#else
+    InitializeCriticalSection(&_mutex);
+#endif
 }
 
 thread_mutex::~thread_mutex()
