@@ -142,6 +142,11 @@ void kernel::end()
     PostMessage(_wnd, MESSAGE::EXIT, NULL, NULL);
 }
 
+int kernel::reactivate( event e )
+{
+    return WSAAsyncSelect(e.ident(), _wnd, MESSAGE::IO_SOCKET, EVKERNEL_READ | EVKERNEL_WRITE);
+}
+
 kernel::event kernel::backlog::operator[]( int n ) const
 {
     return event(_ev[n]);

@@ -4,7 +4,6 @@
 #include <cclog/cclog.h>
 
 namespace mio {
-
 loop_impl::loop_impl() : 
             _is_running(false)
 {
@@ -103,7 +102,7 @@ void loop_impl::on_event( kernel::event e )
 {
     concurrency_container::ref ref(_handlers);
     shared_handler handler = (*ref)[e.ident()];
-    event ev;
+    event_impl ev(this, e);
     if (e.events() & EVKERNEL_READ) {
         if (!(*handler)(ev)) {
             reset_handler(e.ident());
@@ -175,12 +174,6 @@ void loop_impl::worker_main()
     }
 }
 
-bool loop_impl::isRead( int fd )
-{
-    concurrency_container::auto_ref ref(_handlers);
-    return ref->find(fd) != ref->end();
-}
-
 bool loop_impl::run_once( bool block )
 {
     
@@ -215,6 +208,35 @@ bool loop_impl::run_once( bool block )
 void loop_impl::flush()
 {
     while(run_once(false));
+}
+
+void loop_impl::event_next( kernel::event ke )
+{
+    _kernel->reactivate(ke);
+}
+
+void loop_impl::event_remove( kernel::event ke )
+{
+    _kernel->remove(ke);
+    reset_handler(ke.ident());
+}
+
+void event::next()
+{
+    event_impl* self = static_cast<event_impl*>(this);
+    if(!self->is_reactivated()) {
+        self->m_loop->event_next(self->m_pe);
+        self->m_flags |= event_impl::FLAG_REACTIVATED;
+    }
+}
+
+void event::remove()
+{
+    event_impl* self = static_cast<event_impl*>(this);
+    if(!self->is_removed()) {
+        self->m_loop->event_remove(self->m_pe);
+        self->m_flags |= event_impl::FLAG_REMOVED;
+    }
 }
 
 loop::loop()

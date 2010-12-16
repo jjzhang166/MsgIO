@@ -190,14 +190,16 @@ private:
     void *_impl;
 };
 
-class event 
-{
-private: //Disable copy and assignment
-    event(const event&);         
-    void operator=(const event&);
-
+class event {
+protected:
+	event() { }
+	~event() { }
+	
 public:
-    event(){};
+	void next();
+	void remove();
+private:
+	event(const event&);
 };
 
 class xfer {

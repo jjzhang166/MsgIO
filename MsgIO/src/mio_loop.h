@@ -62,7 +62,8 @@ public:
         listen_callback_t callback,
         int backlog = 1024);
 
-    bool isRead(int fd);
+    inline void event_next(kernel::event ke);
+    inline void event_remove(kernel::event ke);
 
 private:
     void set_handler(shared_handler sh);
@@ -96,5 +97,40 @@ private:
 
     friend class loop;
     friend class out;
+};
+
+class event_impl : public event {
+public:
+    event_impl(loop_impl* lo, kernel::event ke) :
+      m_flags(0),
+          m_loop(lo),
+          m_pe(ke) { }
+
+      ~event_impl() { }
+
+      bool is_reactivated()
+      {
+          return (m_flags & FLAG_REACTIVATED) != 0;
+      }
+
+      bool is_removed()
+      {
+          return (m_flags & FLAG_REMOVED) != 0;
+      }
+
+      const kernel::event& get_kernel_event() const
+      {
+          return m_pe;
+      }
+
+private:
+    enum {
+        FLAG_REACTIVATED = 0x01,
+        FLAG_REMOVED     = 0x02,
+    };
+    int m_flags;
+    loop_impl* m_loop;
+    kernel::event m_pe;
+    friend class event;
 };
 } //namespace mio
