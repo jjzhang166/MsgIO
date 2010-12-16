@@ -9,23 +9,10 @@
 #include <queue>
 
 #include "mio_out.h"
+#include "kernel.h"
 
 #define IMPL (static_cast<loop_impl*>(_impl))
 namespace mio {
-namespace MESSAGE {
-    enum MSG {
-        IO_SOCKET = WM_USER + 10,
-        IO_TIMER,
-        EXIT
-    };
-}
-
-namespace EVENT {
-    enum EV {
-        READ = FD_ACCEPT | FD_READ,
-        WRITE = FD_WRITE
-    };
-}
 
 class loop_impl
 {
@@ -87,12 +74,13 @@ private:
 
     void thread_main();
     void worker_main();
-    bool handle_message(); // return true means get Exit message
-    void handle_io_socket(WPARAM wParam, LPARAM lParam);
-    void handle_io_timer(WPARAM wParam, LPARAM lParam);
+    void on_event(kernel::event e);
+//     bool handle_message(); // return true means get Exit message
+//     void handle_io_socket(WPARAM wParam, LPARAM lParam);
+//     void handle_io_timer(WPARAM wParam, LPARAM lParam);
 
 private:
-    HWND _hwnd;
+    std::auto_ptr<kernel> _kernel;
     std::auto_ptr<out> _out;
 
     thread _thread;

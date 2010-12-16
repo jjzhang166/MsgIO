@@ -76,7 +76,7 @@ int loop::listen(
     }
 
     try {
-        add_handler<listen_handler>(lsock, IMPL->_hwnd, callback);
+        add_handler<listen_handler>(lsock, reinterpret_cast<HWND>(IMPL->_kernel->ident()), callback);
     } catch (...) {
         ::closesocket(lsock);
         throw;

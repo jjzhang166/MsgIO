@@ -160,6 +160,18 @@
 				Name="imp"
 				>
 				<File
+					RelativePath=".\src\kernel.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\kernel_win32.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\kernel_win32.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\mio_connect.cpp"
 					>
 				</File>

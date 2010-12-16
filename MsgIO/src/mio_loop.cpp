@@ -1,17 +1,15 @@
 #include "mio_loop.h"
+#include "kernel_win32.h"
 
 #include <cclog/cclog.h>
-
-#define WAIT_TIME_OUT 1000
 
 namespace mio {
 
 loop_impl::loop_impl() : 
-            _is_running(false),
-            _hwnd(0)
+            _is_running(false)
 {
     _thread.run(bind(&loop_impl::thread_main, this));
-    while(_hwnd == 0); //FIXME TODO(wsxiaoys)
+    while (_kernel.get() == NULL); //FIXME
     _out.reset(new out(this));
 }
 
@@ -63,7 +61,7 @@ bool loop_impl::is_running() const
 void loop_impl::end()
 {
     _is_running = false;
-    PostMessage(_hwnd, MESSAGE::EXIT, NULL, NULL);
+    _kernel->end();
     for (int i = 0;i<(int)_workers.unsafe_ref().size();++i) {
         submit_impl(NULL);
     }
@@ -84,74 +82,88 @@ void loop_impl::join()
 
 void loop_impl::thread_main()
 {
-    _hwnd = CreateWindowEx(0, TEXT("Message"), NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
-
+    _kernel.reset(new kernel());
+    kernel::backlog backlog;
+    LOG_TRACE("Loop Started");
     while(true) {
-        DWORD ret = MsgWaitForMultipleObjects(0, NULL, FALSE, WAIT_TIME_OUT, QS_ALLEVENTS);
-        if (ret != WAIT_TIMEOUT) {
-            if (handle_message()) {
-                break;
-            }
+        int size = _kernel->wait(&backlog);
+        if (size == -1) {
+            break;
+        }
+
+        for (int i = 0;i<size;++i) {
+            submit_impl(bind(&loop_impl::on_event, this, backlog[i]));
         }
     }
-
     LOG_TRACE("Loop ended");
-    ::DestroyWindow(_hwnd);
-    _hwnd = 0;
-}
-
-bool loop_impl::handle_message()
-{
-    MSG msg;
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        switch (msg.message) {
-        case MESSAGE::IO_SOCKET:
-            {
-                submit_impl(bind(&loop_impl::handle_io_socket, this, msg.wParam, msg.lParam));
-            }
-            break;
-        case MESSAGE::IO_TIMER:
-            {
-                submit_impl(bind(&loop_impl::handle_io_timer, this, msg.wParam, msg.lParam));
-            }
-            break;
-        case MESSAGE::EXIT:
-            {
-                return true;
-            }
-            break;
-        default:
-            break;
-        }
-    }
-    return false;
 }
 
 
-void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
+void loop_impl::on_event( kernel::event e )
 {
-    int socket = wParam;
-    int error = WSAGETSELECTERROR(lParam);
-    int e = WSAGETSELECTEVENT(lParam);
-    if (e & EVENT::READ) {
-        event ev;
-        (*(*_handlers.lock())[socket])(ev);
-    }
-
-    if (e & EVENT::WRITE) {
-        _out->on_write(socket);
-    }
-}
-
-
-void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
-{
-    int ident = static_cast<int>(wParam);
+    concurrency_container::ref ref(_handlers);
+    shared_handler handler = (*ref)[e.ident()];
     event ev;
-    if (!(*(*_handlers.lock())[ident])(ev)) {
-        reset_handler(ident);
+    if (e.events() & EVKERNEL_READ) {
+        if (!(*handler)(ev)) {
+            reset_handler(e.ident());
+        }
+    } else {
+        _out->on_write(e);
     }
 }
+// bool loop_impl::handle_message()
+// {
+//     MSG msg;
+//     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+//         switch (msg.message) {
+//         case MESSAGE::IO_SOCKET:
+//             {
+//                 submit_impl(bind(&loop_impl::handle_io_socket, this, msg.wParam, msg.lParam));
+//             }
+//             break;
+//         case MESSAGE::IO_TIMER:
+//             {
+//                 submit_impl(bind(&loop_impl::handle_io_timer, this, msg.wParam, msg.lParam));
+//             }
+//             break;
+//         case MESSAGE::EXIT:
+//             {
+//                 return true;
+//             }
+//             break;
+//         default:
+//             break;
+//         }
+//     }
+//     return false;
+// }
+// 
+// 
+// void loop_impl::handle_io_socket( WPARAM wParam, LPARAM lParam )
+// {
+//     int socket = wParam;
+//     int error = WSAGETSELECTERROR(lParam);
+//     int e = WSAGETSELECTEVENT(lParam);
+//     if (e & EVKERNEL_READ) {
+//         event ev;
+//         (*(*_handlers.lock())[socket])(ev);
+//     }
+// 
+//     if (e & EVKERNEL_WRITE) {
+//         _out->on_write(socket);
+//     }
+// }
+// 
+// 
+// void loop_impl::handle_io_timer( WPARAM wParam, LPARAM lParam )
+// {
+//     int ident = static_cast<int>(wParam);
+//     event ev;
+//     if (!(*(*_handlers.lock())[ident])(ev)) {
+//         reset_handler(ident);
+//     }
+// }
 
 void loop_impl::set_handler( shared_handler sh )
 {
@@ -186,14 +198,14 @@ void loop_impl::submit_impl( task_t *f )
 shared_handler loop_impl::add_handler_impl( shared_handler sh )
 {
     set_handler(sh);
-    WSAAsyncSelect(sh->ident(), _hwnd, MESSAGE::IO_SOCKET, EVENT::READ );
+    _kernel->add_fd(sh->ident(), EVKERNEL_READ);
     return sh;
 }
 
 void loop_impl::remove_handler( int ident )
 {
     reset_handler(ident);
-    WSAAsyncSelect(ident, _hwnd, NULL, NULL );
+    _kernel->remove_fd(ident, NULL);
 }
 
 void loop_impl::worker_main()
@@ -230,6 +242,7 @@ bool loop_impl::run_once( bool block )
             return false;
         }
     }
+
     shared_ptr<task_t> task;
     {
         concurrency_task_queue::ref ref(_task_queue);

@@ -1,5 +1,6 @@
 #include "mio_out.h"
 #include "mio_loop.h"
+#include "kernel_win32.h"
 
 #include <limits.h>
 #include <vector>
@@ -372,15 +373,16 @@ void out::commit_raw( int fd, char* xfbuf, char* xfendp )
 void out::watch( int fd )
 {
     InterlockedIncrement(&_watching);
-    int e = EVENT::WRITE;
+    int e = EVKERNEL_WRITE;
     if (_loop->isRead(fd)) {
-        e |= EVENT::READ;
+        e |= EVKERNEL_READ;
     }
-    WSAAsyncSelect(fd, _loop->_hwnd, MESSAGE::IO_SOCKET, e);
+    _loop->_kernel->add_fd(fd, e);
 }
 
-void out::on_write( int ident )
+void out::on_write( kernel::event &e )
 {
+    int ident = e.ident();
     shared_xfer_impl ctx(get_xfer(_xfers, ident));
     thread_scoped_lock lock(ctx->mutex());
 
@@ -398,9 +400,9 @@ void out::on_write( int ident )
 
         int e = 0;
         if (_loop->isRead(ident)) {
-            e |= EVENT::READ;
+            e |= EVKERNEL_READ;
         }
-        WSAAsyncSelect(ident, _loop->_hwnd, MESSAGE::IO_SOCKET, e);
+        _loop->_kernel->add_fd(ident, e);
     }
 }
 

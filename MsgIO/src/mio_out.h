@@ -1,6 +1,7 @@
 #pragma once
 #include "mio/mio.h"
 #include "mio/sync.h"
+#include "kernel.h"
 #include <hash_map>
 
 namespace mio {
@@ -23,7 +24,7 @@ public:
 	inline void commit(int fd, xfer* xf);
 	inline void write(int fd, const void* buf, size_t size);
 
-    void on_write(int ident);
+    void on_write(kernel::event &e);
 private:
     void watch(int fd);
     volatile long _watching;
