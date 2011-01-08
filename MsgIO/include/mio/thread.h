@@ -7,7 +7,7 @@
 namespace mio {
 class thread_error : system_error {
 public:
-	thread_error(int errno_, const std::string& msg);
+    thread_error(int errno_, const std::string& msg);
 };
 
 class thread {
@@ -38,8 +38,8 @@ private:
 class thread_mutex 
 {
 private: //Disable copy and assignment
-	thread_mutex(const thread_mutex&);         
-	void operator=(const thread_mutex&);
+    thread_mutex(const thread_mutex&);         
+    void operator=(const thread_mutex&);
 
 public:
     thread_mutex();
@@ -60,8 +60,8 @@ private:
 class thread_semaphore 
 {
 private: //Disable copy and assignment
-	thread_semaphore(const thread_semaphore&);         
-	void operator=(const thread_semaphore&);
+    thread_semaphore(const thread_semaphore&);         
+    void operator=(const thread_semaphore&);
 
 public:
     thread_semaphore(int init = 0, int maximum = 65535);

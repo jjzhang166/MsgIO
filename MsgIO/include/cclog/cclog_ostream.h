@@ -22,13 +22,13 @@
 
 class cclog_ostream : public cclog {
 public:
-	cclog_ostream(level runtime_level, std::ostream& stream);
-	~cclog_ostream();
+    cclog_ostream(level runtime_level, std::ostream& stream);
+    ~cclog_ostream();
 
-	void log_impl(level lv, std::string& str);
+    void log_impl(level lv, std::string& str);
 
 private:
-	std::ostream& m_stream;
+    std::ostream& m_stream;
 };
 
 #endif /* cclog_ostream.h */

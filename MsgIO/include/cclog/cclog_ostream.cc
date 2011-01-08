@@ -19,8 +19,8 @@
 #include <string.h>
 
 cclog_ostream::cclog_ostream(level runtime_level, std::ostream& stream) :
-	cclog(runtime_level),
-	m_stream(stream)
+    cclog(runtime_level),
+    m_stream(stream)
 { }
 
 cclog_ostream::~cclog_ostream()
@@ -28,6 +28,6 @@ cclog_ostream::~cclog_ostream()
 
 void cclog_ostream::log_impl(level lv, std::string& str)
 {
-	m_stream << str << std::endl;
+    m_stream << str << std::endl;
 }
 

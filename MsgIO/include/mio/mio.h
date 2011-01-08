@@ -18,8 +18,8 @@ typedef weak_ptr<basic_handler> weak_handler;
 class loop 
 {
 private: //Disable copy and assignment
-	loop(const loop&);         
-	void operator=(const loop&);
+    loop(const loop&);         
+    void operator=(const loop&);
 
 public:
     loop();
@@ -63,52 +63,52 @@ public:
 
     void remove_timer(int ident);
     
-	typedef void (*finalize_t)(void* user);
+    typedef void (*finalize_t)(void* user);
 
-	void write(int fd, const void* buf, size_t size);
+    void write(int fd, const void* buf, size_t size);
 
-	void write(int fd, const void* buf, size_t size,
-			finalize_t fin, void* user);
+    void write(int fd, const void* buf, size_t size,
+            finalize_t fin, void* user);
 
-	template <typename T>
-	void write(int fd, const void* buf, size_t size,
-			std::auto_ptr<T>& fin);
+    template <typename T>
+    void write(int fd, const void* buf, size_t size,
+            std::auto_ptr<T>& fin);
 
-	template <typename T>
-	void write(int fd, const void* buf, size_t size,
-			mio::shared_ptr<T> fin);
-
-
-	void writev(int fd, const struct iovec* vec, size_t veclen,
-			finalize_t fin, void* user);
-
-	template <typename T>
-	void writev(int fd, const struct iovec* vec, size_t veclen,
-			std::auto_ptr<T>& fin);
-
-	template <typename T>
-	void writev(int fd, const struct iovec* vec, size_t veclen,
-			mio::shared_ptr<T> fin);
+    template <typename T>
+    void write(int fd, const void* buf, size_t size,
+            mio::shared_ptr<T> fin);
 
 
-	void sendfile(int fd, int infd, uint64_t off, size_t size,
-			finalize_t fin, void* user);
-	
-	void hsendfile(int fd,
-			const void* header, size_t header_size,
-			int infd, uint64_t off, size_t size,
-			finalize_t fin, void* user);
-	
-	void hvsendfile(int fd,
-			const struct iovec* header_vec, size_t header_veclen,
-			int infd, uint64_t off, size_t size,
-			finalize_t fin, void* user);
+    void writev(int fd, const struct iovec* vec, size_t veclen,
+            finalize_t fin, void* user);
+
+    template <typename T>
+    void writev(int fd, const struct iovec* vec, size_t veclen,
+            std::auto_ptr<T>& fin);
+
+    template <typename T>
+    void writev(int fd, const struct iovec* vec, size_t veclen,
+            mio::shared_ptr<T> fin);
 
 
-	void commit(int fd, xfer* xf);
+    void sendfile(int fd, int infd, uint64_t off, size_t size,
+            finalize_t fin, void* user);
+    
+    void hsendfile(int fd,
+            const void* header, size_t header_size,
+            int infd, uint64_t off, size_t size,
+            finalize_t fin, void* user);
+    
+    void hvsendfile(int fd,
+            const struct iovec* header_vec, size_t header_veclen,
+            int infd, uint64_t off, size_t size,
+            finalize_t fin, void* user);
 
-	void flush();
-	
+
+    void commit(int fd, xfer* xf);
+
+    void flush();
+    
     template <typename Handler>
     shared_ptr<Handler> add_handler();
         template <typename Handler, typename A1>
@@ -145,7 +145,7 @@ public:
     shared_ptr<Handler> add_handler(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10, A11 a11, A12 a12, A13 a13, A14 a14, A15 a15, A16 a16);
 
 
-	template <typename F>
+    template <typename F>
     void submit(F f);
         template <typename F, typename A1>
     void submit(F f, A1 a1);
@@ -192,52 +192,52 @@ private:
 
 class event {
 protected:
-	event() { }
-	~event() { }
-	
+    event() { }
+    ~event() { }
+    
 public:
-	void next();
-	void remove();
+    void next();
+    void remove();
 private:
-	event(const event&);
+    event(const event&);
 };
 
 class xfer {
 public:
-	xfer();
-	~xfer();
+    xfer();
+    ~xfer();
 
-	typedef loop::finalize_t finalize_t;
+    typedef loop::finalize_t finalize_t;
 
-	void push_write(const void* buf, size_t size);
+    void push_write(const void* buf, size_t size);
 
-	void push_writev(const struct iovec* vec, size_t veclen);
+    void push_writev(const struct iovec* vec, size_t veclen);
 
-	void push_sendfile(int infd, uint64_t off, size_t len);
+    void push_sendfile(int infd, uint64_t off, size_t len);
 
-	void push_finalize(finalize_t fin, void* user);
+    void push_finalize(finalize_t fin, void* user);
 
-	template <typename T>
-	void push_finalize(std::auto_ptr<T> fin);
+    template <typename T>
+    void push_finalize(std::auto_ptr<T> fin);
 
-	template <typename T>
-	void push_finalize(mio::shared_ptr<T> fin);
+    template <typename T>
+    void push_finalize(mio::shared_ptr<T> fin);
 
-	bool empty() const;
+    bool empty() const;
 
-	void clear();
+    void clear();
 
-	void migrate(xfer* to);
+    void migrate(xfer* to);
 
 protected:
-	char* m_head;
-	char* m_tail;
-	size_t m_free;
+    char* m_head;
+    char* m_tail;
+    size_t m_free;
 
-	void reserve(size_t reqsz);
+    void reserve(size_t reqsz);
 
 private:
-	xfer(const xfer&);
+    xfer(const xfer&);
 };
 
 class basic_handler 
@@ -441,64 +441,64 @@ inline void loop::submit(F f, A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A
 { submit_impl(bind(f, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16)); }
 
 inline xfer::xfer() :
-	m_head(NULL), m_tail(NULL), m_free(0) { }
+    m_head(NULL), m_tail(NULL), m_free(0) { }
 
 inline xfer::~xfer()
 {
-	if(m_head) {
-		clear();
-		::free(m_head);
-	}
+    if(m_head) {
+        clear();
+        ::free(m_head);
+    }
 }
 
 inline bool xfer::empty() const
 {
-	return m_head == m_tail;
+    return m_head == m_tail;
 }
 
 template <typename T>
 inline void xfer::push_finalize(std::auto_ptr<T> fin)
 {
-	push_finalize(&mio::object_delete<T>, reinterpret_cast<void*>(fin.get()));
-	fin.release();
+    push_finalize(&mio::object_delete<T>, reinterpret_cast<void*>(fin.get()));
+    fin.release();
 }
 
 template <typename T>
 inline void xfer::push_finalize(mio::shared_ptr<T> fin)
 {
-	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
-	push_finalize(afin);
+    std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+    push_finalize(afin);
 }
 
 template <typename T>
 inline void loop::write(int fd, const void* buf, size_t size,
-		std::auto_ptr<T>& fin)
+        std::auto_ptr<T>& fin)
 {
-	write(fd, buf, size, &mio::object_delete<T>, fin.get());
-	fin.release();
+    write(fd, buf, size, &mio::object_delete<T>, fin.get());
+    fin.release();
 }
 
 template <typename T>
 inline void loop::write(int fd, const void* buf, size_t size,
-		mio::shared_ptr<T> fin)
+        mio::shared_ptr<T> fin)
 {
-	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
-	write(fd, buf, size, afin);
+    std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+    write(fd, buf, size, afin);
 }
 
 template <typename T>
 inline void loop::writev(int fd, const struct iovec* vec, size_t veclen,
-		std::auto_ptr<T>& fin)
+        std::auto_ptr<T>& fin)
 {
-	writev(fd, vec, veclen, &mio::object_delete<T>, fin.get());
-	fin.release();
+    writev(fd, vec, veclen, &mio::object_delete<T>, fin.get());
+    fin.release();
 }
 
 template <typename T>
 inline void loop::writev(int fd, const struct iovec* vec, size_t veclen,
-		mio::shared_ptr<T> fin)
+        mio::shared_ptr<T> fin)
 {
-	std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
-	writev(fd, vec, veclen, afin);
+    std::auto_ptr<mio::shared_ptr<T> > afin(new mio::shared_ptr<T>(fin));
+    writev(fd, vec, veclen, afin);
 }
 } // namespace mio

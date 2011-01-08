@@ -19,7 +19,7 @@
 #include <string.h>
 
 cclog_null::cclog_null() :
-	cclog((level)((int)FATAL+1))
+    cclog((level)((int)FATAL+1))
 { }
 
 cclog_null::~cclog_null()

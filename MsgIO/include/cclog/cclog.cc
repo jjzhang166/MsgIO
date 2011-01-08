@@ -21,19 +21,19 @@ cclog* cclog::s_logger;
 
 void cclog::reset(cclog* lg)
 {
-	if(s_logger) { delete s_logger; }
-	s_logger = lg;
+    if(s_logger) { delete s_logger; }
+    s_logger = lg;
 }
 
 void cclog::destroy()
 {
-	delete s_logger;
-	s_logger = NULL;
+    delete s_logger;
+    s_logger = NULL;
 }
 
 
 cclog::cclog(level runtime_level) :
-	m_runtime_level(runtime_level) {}
+    m_runtime_level(runtime_level) {}
 
 cclog::~cclog() {}
 

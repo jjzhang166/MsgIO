@@ -169,7 +169,7 @@ void loop_impl::worker_main()
         }
         catch (std::exception &e)
         {
-        	LOG_ERROR(e.what());
+            LOG_ERROR(e.what());
         }
     }
 }

@@ -13,8 +13,8 @@ private: //Disable copy and assignment
     void operator=(const kernel&);
 
 public:
-	kernel();
-	~kernel();
+    kernel();
+    ~kernel();
 
     class event 
     {
@@ -30,11 +30,11 @@ public:
         uint64_t _data;
 
         uint64_t data()   const { return _data; }
-	};
+    };
 
 
-	int add_fd(int fd, short event);
-	int remove_fd(int fd, short event);
+    int add_fd(int fd, short event);
+    int remove_fd(int fd, short event);
 
 
     class timer 
@@ -58,33 +58,33 @@ public:
         friend class kernel;
     };
 
-	int add_timer(timer* tm, double value_sec, double internal_sec);
-	int remove_timer(timer *tm);
-	
-	int ident() const;
+    int add_timer(timer* tm, double value_sec, double internal_sec);
+    int remove_timer(timer *tm);
+    
+    int ident() const;
 
 
-	class backlog {
+    class backlog {
     private: //Disable copy and assignment
-    	backlog(const backlog&);         
-    	void operator=(const backlog&);
+        backlog(const backlog&);         
+        void operator=(const backlog&);
 
-	public:
+    public:
         backlog() {}
         ~backlog() {}
-		event operator[] (int n) const;
+        event operator[] (int n) const;
 
     private:
         std::vector<uint64_t> _ev;
         friend class kernel;
-	};
+    };
 
-	int wait(backlog* result);
-	int wait(backlog* result, int timeout_msec);
+    int wait(backlog* result);
+    int wait(backlog* result, int timeout_msec);
     void end();
 
-	int reactivate(event e);
-	int remove(event e); //can only used for socket
+    int reactivate(event e);
+    int remove(event e); //can only used for socket
 
 private: //members
     HWND _wnd;

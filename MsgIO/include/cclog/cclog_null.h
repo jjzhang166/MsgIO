@@ -22,10 +22,10 @@
 
 class cclog_null : public cclog {
 public:
-	cclog_null();
-	~cclog_null();
+    cclog_null();
+    ~cclog_null();
 
-	void log_impl(level lv, std::string& str);
+    void log_impl(level lv, std::string& str);
 };
 
 #endif /* cclog_null.h */

@@ -5,10 +5,10 @@
 
 class cclog_debugoutput : public cclog {
 public:
-	cclog_debugoutput(level runtime_level);
-	~cclog_debugoutput();
+    cclog_debugoutput(level runtime_level);
+    ~cclog_debugoutput();
 
-	void log_impl(level lv, std::string& str);
+    void log_impl(level lv, std::string& str);
 };
 
 #endif /* cclog_debugoutput.h */

@@ -7,14 +7,14 @@ namespace mio {
 template <typename T>
 static void object_delete(void* obj)
 {
-	delete reinterpret_cast<T*>(obj);
+    delete reinterpret_cast<T*>(obj);
 }
 
 
 template <typename T>
 static void object_destructor(void* obj)
 {
-	reinterpret_cast<T*>(obj)->~T();
+    reinterpret_cast<T*>(obj)->~T();
 }
 
 

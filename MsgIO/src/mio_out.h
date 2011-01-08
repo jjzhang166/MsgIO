@@ -13,16 +13,16 @@ private: //Disable copy and assignment
     void operator=(const out&);
 
 public:
-	out(loop_impl *l);
-	~out();
+    out(loop_impl *l);
+    ~out();
 
-	typedef loop::finalize_t finalize_t;
+    typedef loop::finalize_t finalize_t;
 
-	inline void commit_raw(int fd, char* xfbuf, char* xfendp);
+    inline void commit_raw(int fd, char* xfbuf, char* xfendp);
 
-	// optimize
-	inline void commit(int fd, xfer* xf);
-	inline void write(int fd, const void* buf, size_t size);
+    // optimize
+    inline void commit(int fd, xfer* xf);
+    inline void write(int fd, const void* buf, size_t size);
 
     void on_write(kernel::event &e);
 private:

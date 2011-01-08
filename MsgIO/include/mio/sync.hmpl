@@ -8,101 +8,101 @@ namespace mio {
 template <typename T>
 class sync {
 public:
-	sync() : _obj() { }
+    sync() : _obj() { }
 %varlen_each do |gen|
-	template <[%gen.template%]>
-	sync([%gen.args%]) : _obj([%gen.params%]) { }
+    template <[%gen.template%]>
+    sync([%gen.args%]) : _obj([%gen.params%]) { }
 %end
 
-	~sync() { }
+    ~sync() { }
 
-	T& unsafe_ref() { return _obj; }
-	const T& unsafe_ref() const { return _obj; }
+    T& unsafe_ref() { return _obj; }
+    const T& unsafe_ref() const { return _obj; }
 
-	class ref {
-	public:
-		ref(sync<T>& obj) : _ref(NULL)
-		{
-			obj._mutex.lock();
-			_ref = &obj;
-		}
-	
-		ref() : _ref(NULL) { }
-	
-		~ref() { reset(); }
-	
-		void reset()
-		{
-			if(_ref) {
-				_ref->_mutex.unlock();
-				_ref = NULL;
-			}
-		}
-	
-		void reset(sync<T>& obj)
-		{
-			reset();
-			obj._mutex.lock();
-			_ref = &obj;
-		}
+    class ref {
+    public:
+        ref(sync<T>& obj) : _ref(NULL)
+        {
+            obj._mutex.lock();
+            _ref = &obj;
+        }
+    
+        ref() : _ref(NULL) { }
+    
+        ~ref() { reset(); }
+    
+        void reset()
+        {
+            if(_ref) {
+                _ref->_mutex.unlock();
+                _ref = NULL;
+            }
+        }
+    
+        void reset(sync<T>& obj)
+        {
+            reset();
+            obj._mutex.lock();
+            _ref = &obj;
+        }
 
-		void swap(sync<T>& obj)
-		{
-			sync<T>* tmp = _ref;
-			_ref = obj._ref;
-			obj._ref = tmp;
-		}
-	
-		T& operator*() { return _ref->_obj; }
-		T* operator->() { return &operator*(); }
-		const T& operator*() const { return _ref->_obj; }
-		const T* operator->() const { return &operator*(); }
+        void swap(sync<T>& obj)
+        {
+            sync<T>* tmp = _ref;
+            _ref = obj._ref;
+            obj._ref = tmp;
+        }
+    
+        T& operator*() { return _ref->_obj; }
+        T* operator->() { return &operator*(); }
+        const T& operator*() const { return _ref->_obj; }
+        const T* operator->() const { return &operator*(); }
 
-		operator bool() const { return _ref != NULL; }
+        operator bool() const { return _ref != NULL; }
 
-		thread_mutex& get_mutex()
-		{
-			return _ref->_mutex;
-		}
-	
-	protected:
-		sync<T>* _ref;
-	
-	private:
-		ref(const ref&);
-	};
+        thread_mutex& get_mutex()
+        {
+            return _ref->_mutex;
+        }
+    
+    protected:
+        sync<T>* _ref;
+    
+    private:
+        ref(const ref&);
+    };
 
-	class auto_ref : public ref {
-	public:
-		auto_ref(sync<T>& obj) : ref(obj) { }
-		auto_ref() { }
-		~auto_ref() { }
+    class auto_ref : public ref {
+    public:
+        auto_ref(sync<T>& obj) : ref(obj) { }
+        auto_ref() { }
+        ~auto_ref() { }
 
-		auto_ref(auto_ref& o)
-		{
-			ref::_ref = o._ref;
-			o._ref = NULL;
-		}
+        auto_ref(auto_ref& o)
+        {
+            ref::_ref = o._ref;
+            o._ref = NULL;
+        }
 
-		auto_ref& operator= (auto_ref& o)
-		{
-			auto_ref(o).swap(*this);
-			return *this;
-		}
-	};
+        auto_ref& operator= (auto_ref& o)
+        {
+            auto_ref(o).swap(*this);
+            return *this;
+        }
+    };
 
-	auto_ref lock()
-	{
-		return auto_ref(*this);
-	}
-
-private:
-	T _obj;
-	thread_mutex _mutex;
-	friend class ref;
+    auto_ref lock()
+    {
+        return auto_ref(*this);
+    }
 
 private:
-	sync(const sync&);
+    T _obj;
+    thread_mutex _mutex;
+    friend class ref;
+
+private:
+    sync(const sync&);
 };
 
 

@@ -11,31 +11,31 @@ namespace mio {
 namespace {
 class xfer_impl : public xfer {
 public:
-	xfer_impl() { }
-	~xfer_impl() { }
+    xfer_impl() { }
+    ~xfer_impl() { }
 
-	bool try_write(int fd);
+    bool try_write(int fd);
 
-	void push_xfraw(char* buf, size_t size);
+    void push_xfraw(char* buf, size_t size);
 
-	static size_t sizeof_mem();
+    static size_t sizeof_mem();
     static size_t sizeof_iovec(size_t veclen);
-	static size_t sizeof_finalize();
+    static size_t sizeof_finalize();
 
-	static char* fill_mem(char* from, const void* buf, size_t size);
+    static char* fill_mem(char* from, const void* buf, size_t size);
     static char* fill_iovec(char* from, const iovec* vec, size_t veclen);
-	static char* fill_finalize(char* from, finalize_t fin, void* user);
+    static char* fill_finalize(char* from, finalize_t fin, void* user);
 
-	static bool execute(int fd, char* head, char** tail);
+    static bool execute(int fd, char* head, char** tail);
 
 public:
-	thread_mutex& mutex() { return m_mutex; }
+    thread_mutex& mutex() { return m_mutex; }
 
 private:
-	thread_mutex m_mutex;
+    thread_mutex m_mutex;
 
 private:
-	xfer_impl(const xfer_impl&);
+    xfer_impl(const xfer_impl&);
 };
 
 typedef shared_ptr<xfer_impl> shared_xfer_impl;

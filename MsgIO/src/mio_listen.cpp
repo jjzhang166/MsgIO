@@ -6,45 +6,45 @@ namespace mio {
 namespace  {
 class listen_handler : public handler {
 public:
-	typedef loop::listen_callback_t listen_callback_t;
+    typedef loop::listen_callback_t listen_callback_t;
 
-	listen_handler(int fd, HWND hwnd, listen_callback_t callback) :
-		handler(fd), _hwnd(hwnd), _callback(callback) {}
+    listen_handler(int fd, HWND hwnd, listen_callback_t callback) :
+        handler(fd), _hwnd(hwnd), _callback(callback) {}
 
-	~listen_handler() {}
+    ~listen_handler() {}
 
-	void on_read(event& e)
-	{
-		//while(true) {
-			int err = 0;
-			int sock = ::accept(fd(), NULL, NULL);
+    void on_read(event& e)
+    {
+        //while(true) {
+            int err = 0;
+            int sock = ::accept(fd(), NULL, NULL);
             WSAAsyncSelect(sock, _hwnd, NULL, NULL);
-			if(sock == INVALID_SOCKET) {
+            if(sock == INVALID_SOCKET) {
                 err = WSAGetLastError();
                 if(err == WSAEWOULDBLOCK || err == WSAEINTR) {
-					return;
-				}
+                    return;
+                }
 
-				_callback(sock, err);
+                _callback(sock, err);
 
-				throw system_error(err, "accept failed");
-			}
+                throw system_error(err, "accept failed");
+            }
 
-			try {
-				_callback(sock, err);
-			} catch (...) {
-				::closesocket(sock);
-			}
-		//}
-	}
+            try {
+                _callback(sock, err);
+            } catch (...) {
+                ::closesocket(sock);
+            }
+        //}
+    }
 
 private:
-	listen_callback_t _callback;
+    listen_callback_t _callback;
     HWND _hwnd;
 
 private:
-	listen_handler();
-	listen_handler(const listen_handler&);
+    listen_handler();
+    listen_handler(const listen_handler&);
 };
 } //namespace noname
 
