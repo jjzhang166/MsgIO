@@ -7,7 +7,7 @@ In process of migrating [msgpack-rpc](http://github.com/msgpack/msgpack-rpc) to 
 But since it is hard to provide a similar implement such as epoll/kqueue which is core of mpio, I have to make my own implement.Since I have made the model hardly involved with win32 socket & its Message Queue, I changed the name to MsgIO.
 
 ## About implemention
-Since no IOCP support in win32, I build the kernel with WSAAsyncSelect & Message Queue.
+Since no IOCP support in wince, I build the kernel with WSAAsyncSelect & Message Queue.
 
 Contributing
 ------------
